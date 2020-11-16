@@ -1,45 +1,145 @@
-package main
-
-/**
-* Copyright (c)2020, Matthew A Peters
- */
+package dali
 
 import (
 	"fmt"
 	"net/url"
-	"os"
 
 	"github.com/zserge/lorca"
 )
 
-// Pane is a page within a Window
-type Pane struct {
-	Class string
-	Name  string
-	Style string
+// Styles is a map of style elements and values
+type Styles map[string]string
+
+//String for Styles
+func (s Styles) String() string {
+	style := ""
+	for k, v := range s {
+		style = fmt.Sprintf("%s:%s;%s", k, v, style)
+	}
+	return style
+}
+
+// Binding defines which JavaScript functions should be bound to Go functions
+type Binding struct {
+	FunctionName  string
+	BoundFunction func()
 }
 
 // Window is the main application window
 type Window struct {
-	Pages map[string]*Pane
-	ui    lorca.UI
+	Width, Height int
+	Style         StyleSheet
+	html          string
+	ui            lorca.UI
+	ProfileDir    string
+	Elements      *Elements
+	Args          []string
+	Bindings      []Binding
 }
 
-//Render produces the HTML rendering for the Pane
-func (p Pane) Render() string {
-	return fmt.Sprintf(`<div id="%s" ></div>`, p.Name)
+// StyleSheet references an external stylesheet to load
+type StyleSheet struct {
+	URL string
+}
+
+//String for StyleSheet
+func (style StyleSheet) String() string {
+	if style.URL == "" {
+		return ""
+	}
+	return fmt.Sprintf(`<link rel="stylesheet" href="%s">`, style.URL)
 }
 
 // NewWindow creates a new Window
-func NewWindow(width, height int, profileDir string, args ...string) Window {
+func NewWindow(width, height int, profileDir string, styleSheet string, args ...string) *Window {
+	els := Elements{slice: []*Element{}}
 
-	minimalTemplate := `<html><body></body></html>`
+	w := Window{
+		Width:      width,
+		Height:     height,
+		Style:      StyleSheet{URL: styleSheet},
+		ui:         nil,
+		Args:       args,
+		ProfileDir: profileDir,
+		Elements:   &els,
+		Bindings:   []Binding{},
+	}
+	return &w
+}
 
-	newui, err := lorca.New("data:text/html,"+url.PathEscape(minimalTemplate), profileDir, width, height, args...)
+//String for Window
+func (w *Window) String() string {
+	return fmt.Sprintf(`<html>%s</html>`, w.Elements)
+
+}
+
+//Bind maps a javascript function to a golang function
+func (w *Window) Bind(jscriptFunction string, golangFunction func()) {
+	w.Bindings = append(
+		w.Bindings, Binding{FunctionName: jscriptFunction,
+			BoundFunction: golangFunction})
+}
+
+//BindChildren is used to recursively
+func (w *Window) BindChildren(el *Element) {
+	if el == nil {
+		for _, el := range w.Elements.slice {
+			if el != nil {
+				ui := w.GetUI()
+				(*el).SetUI(&ui)
+			}
+			w.BindChildren((el))
+		}
+		return
+	}
+	b := (*el).Bindings()
+	if b != nil {
+		if b.BoundFunction != nil {
+			w.Bind(b.FunctionName, b.BoundFunction)
+		}
+
+	}
+	els := (*el).Children()
+	for _, c := range els.slice {
+		if c != nil {
+			ui := w.GetUI()
+			(*c).SetUI(&ui)
+			w.BindChildren(c)
+		}
+	}
+}
+
+// Start extracts the application HTML and starts the UI
+func (w *Window) Start() error {
+	newui, err := lorca.New(
+		"data:text/html,"+url.PathEscape(fmt.Sprintf("%s", w)),
+		w.ProfileDir,
+		w.Width,
+		w.Height,
+		w.Args...)
 	if err != nil {
-		os.Exit(1)
+		return err
 	}
-	return Window{
-		ui: newui,
+	w.ui = newui
+
+	w.BindChildren(nil)
+
+	//Apply Bindings
+	for _, bound := range w.Bindings {
+		err = newui.Bind(bound.FunctionName, bound.BoundFunction)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
+}
+
+//Close wraps lorca.UI.Close()
+func (w *Window) Close() {
+	w.ui.Close()
+}
+
+//GetUI is a temporary wrapper for retrieving the lorca.UI
+func (w *Window) GetUI() lorca.UI {
+	return w.ui
 }
