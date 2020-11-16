@@ -1,4 +1,4 @@
-package github.com/matthewapeters/dali
+package dali
 
 /**
 * Copyright (c)2020, Matthew A Peters
