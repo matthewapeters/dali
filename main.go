@@ -7,7 +7,6 @@ package dali
 import (
 	"fmt"
 	"net/url"
-	"os"
 
 	"github.com/zserge/lorca"
 )
@@ -42,15 +41,16 @@ func (p Pane) Render() string {
 }
 
 // NewWindow creates a new Window
-func NewWindow(width, height int, profileDir string, args ...string) Window {
+func NewWindow(width, height int, profileDir string, args ...string) (Window, error) {
 
 	minimalTemplate := `<html><body></body></html>`
 
 	newui, err := lorca.New("data:text/html,"+url.PathEscape(minimalTemplate), profileDir, width, height, args...)
 	if err != nil {
-		os.Exit(1)
+		return Window{}, err
 	}
-	return Window{
+	w := Window{
 		ui: newui,
 	}
+	return w, nil
 }
