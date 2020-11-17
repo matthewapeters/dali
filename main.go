@@ -108,3 +108,8 @@ func (w Window) Start() error {
 func (w Window) AddPane(p Pane) {
 	w.Panes[p.Name] = p
 }
+
+//Close wraps lorca.UI.Close()
+func (w Window) Close() {
+	w.ui.Close()
+}
