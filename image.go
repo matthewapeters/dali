@@ -63,7 +63,7 @@ func (a Area) String() string {
 
 //String of Map
 func (m Map) String() string {
-	html := fmt.Sprintf(`<map name="%s_map">`, m.Name)
+	html := fmt.Sprintf(`<map name="%s">`, m.Name)
 	for _, a := range m.Areas {
 		html = fmt.Sprintf("%s%s", html, a)
 	}
@@ -84,8 +84,8 @@ type Image struct {
 }
 
 // NewImage generates a new Image object
-func NewImage(name string, width, height int, url string) Image {
-	return Image{
+func NewImage(name string, width, height int, url string) *Image {
+	return &Image{
 		ID:      name,
 		Width:   width,
 		Height:  height,
@@ -95,7 +95,7 @@ func NewImage(name string, width, height int, url string) Image {
 }
 
 //String for image
-func (i Image) String() string {
+func (i *Image) String() string {
 	alt := ""
 	style := ""
 	if i.Alt != "" {
@@ -116,19 +116,19 @@ func (i Image) String() string {
 }
 
 //Class of image
-func (i Image) Class() string { return i.ClassName }
+func (i *Image) Class() string { return i.ClassName }
 
 //Style of image
-func (i Image) Style() string { return i.StyleName }
+func (i *Image) Style() string { return i.StyleName }
 
 //Name of image
-func (i Image) Name() string { return i.ID }
+func (i *Image) Name() string { return i.ID }
 
 //Clickable attribute of image - is true if there are mapped areas
-func (i Image) Clickable() bool { return len(i.AreaMap.Areas) > 0 }
+func (i *Image) Clickable() bool { return len(i.AreaMap.Areas) > 0 }
 
 //AddMapArea to the image map
-func (i Image) AddMapArea(shape AreaShape, coords Coordinates, alt string, linkType LinkType, link string) error {
+func (i *Image) AddMapArea(shape AreaShape, coords Coordinates, alt string, linkType LinkType, link string) error {
 	if shape == Circle && len(coords) != 3 {
 		return fmt.Errorf("Circles must have 3 coordinates")
 	}
