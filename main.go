@@ -113,3 +113,8 @@ func (w Window) AddPane(p Pane) {
 func (w Window) Close() {
 	w.ui.Close()
 }
+
+//GetUI is a temporary wrapper for retrieving the lorca.UI
+func (w Window) GetUI() lorca.UI {
+	return w.ui
+}
