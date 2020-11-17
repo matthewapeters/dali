@@ -29,3 +29,6 @@ func (s Span) Class() string { return s.ClassName }
 
 //Style for span
 func (s Span) Style() string { return s.StyleName }
+
+//Name returns the name of the Span
+func (s Span) Name() string { return s.ID }
