@@ -5,7 +5,7 @@ import "fmt"
 // Pane is a page within a Window
 type Pane struct {
 	Class    string
-	Name     string
+	ID       string
 	Style    string
 	Elements Elements
 }
@@ -24,7 +24,7 @@ func (p Pane) String() string {
 		style = fmt.Sprintf(` style="%s"`, p.Style)
 	}
 
-	return fmt.Sprintf(`<div id="%s"%s%s>%s</div>`, p.Name, class, style, p.Elements)
+	return fmt.Sprintf(`<div id="%s"%s%s>%s</div>`, p.Name(), class, style, p.Elements)
 }
 
 //String for Panes
@@ -44,7 +44,12 @@ func (p Pane) AddElement(el Element) {
 // NewPane generates a new Pane
 func NewPane(name string) Pane {
 	return Pane{
-		Name:     name,
+		ID:       name,
 		Elements: Elements(map[string]Element{}),
 	}
+}
+
+//Name returns the name of the Pane
+func (p Pane) Name() string {
+	return p.ID
 }
