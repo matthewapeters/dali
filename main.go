@@ -106,7 +106,7 @@ func (w Window) Start() error {
 
 //AddPane adds a Pane to the window
 func (w Window) AddPane(p Pane) {
-	w.Panes[p.Name] = p
+	w.Panes[p.Name()] = p
 }
 
 //Close wraps lorca.UI.Close()
