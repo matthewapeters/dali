@@ -28,7 +28,6 @@ type Element interface {
 	String() string
 	Class() string
 	Style() string
-	Template() string
 	Name() string
 	Clickable() bool
 	Styles() Styles
