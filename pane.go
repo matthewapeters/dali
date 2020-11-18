@@ -4,10 +4,10 @@ import "fmt"
 
 // Pane is a page within a Window
 type Pane struct {
-	Class    string
-	ID       string
-	Style    string
-	Elements Elements
+	ID        string
+	StyleName string
+	Elements  Elements
+	Element
 }
 
 // Panes is a map of Pane elements
@@ -22,16 +22,12 @@ func (ps *Panes) Add(p *Pane) {
 
 //String for Pane
 func (p *Pane) String() string {
-	class := ""
 	style := ""
-	if p.Class != "" {
-		class = fmt.Sprintf(` class="%s"`, p.Class)
-	}
-	if p.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, p.Style)
+	if p.StyleName != "" {
+		style = fmt.Sprintf(` style="%s"`, p.StyleName)
 	}
 
-	return fmt.Sprintf(`<div id="%s"%s%s>%s</div>`, p.Name(), class, style, p.Elements)
+	return fmt.Sprintf(`<div id="%s"%s>%s</div>`, p.Name(), style, p.Elements)
 }
 
 //String for Panes
@@ -59,4 +55,9 @@ func NewPane(name string) *Pane {
 //Name returns the name of the Pane
 func (p *Pane) Name() string {
 	return p.ID
+}
+
+//Class of a pane is DIV
+func (p *Pane) Class() string {
+	return "DIV"
 }
