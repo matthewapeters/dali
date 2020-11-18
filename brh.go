@@ -51,10 +51,14 @@ type Header struct {
 
 func (h *Header) String() string {
 	style := ""
+	name := ""
 	if h.StyleName != "" {
 		style = fmt.Sprintf(` style:"%s"`, h.StyleName)
 	}
-	return fmt.Sprintf(`<H%d %s>%s</H%d>`, h.Level, style, h.Text, h.Level)
+	if h.ID != "" {
+		name = fmt.Sprintf(` name="%s"`, h.Name())
+	}
+	return fmt.Sprintf(`<H%d %s%s>%s</H%d>`, h.Level, name, style, h.Text, h.Level)
 }
 
 //NewHeader produces a new header element
