@@ -41,5 +41,5 @@ func (c *Canvas) Class() string { return c.ClassName }
 // Clickable is false on Canvas
 func (c *Canvas) Clickable() bool { return false }
 
-//Styles of the Canvas
-func (c *Canvas) Styles() string { return c.StyleName }
+//Style of the Canvas
+func (c *Canvas) Style() string { return c.StyleName }
