@@ -38,7 +38,7 @@ func (p *Pane) String() string {
 func (ps *Panes) String() string {
 	html := ""
 	for _, p := range ps.List {
-		html = fmt.Sprintf(`%s%s`, p, html)
+		html = fmt.Sprintf(`%s%s`, html, p)
 	}
 	return html
 }

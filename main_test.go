@@ -53,4 +53,10 @@ func TestWindow(t *testing.T) {
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf("Expected %s but got %s", expected, w)
 	}
+	p2 := NewPane("TestPaneTwo")
+	w.AddPane(p2)
+	expected = `<html><body><div id="TestPane" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div><div id="TestPaneTwo"></div></body></html>`
+	if fmt.Sprintf("%s", w) != expected {
+		t.Errorf(`Expected "%s" but got "%s"`, expected, w)
+	}
 }
