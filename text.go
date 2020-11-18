@@ -1,15 +1,20 @@
 package dali
 
-//Text is an element for plain old text - if you want style, use a Span
-type Text struct {
+//TextElement is an element for plain old text - if you want style, use a Span
+type TextElement struct {
 	text string
 	Element
 }
 
-func (t *Text) String() string { return t.text }
+//Text creates a TextElement
+func Text(t string) *TextElement {
+	return &TextElement{text: t}
+}
 
-func (t *Text) Class() string { return "" }
+func (t *TextElement) String() string { return t.text }
 
-func (t *Text) Style() string { return "" }
+func (t *TextElement) Class() string { return "" }
 
-func (t *Text) Name() string { return "" }
+func (t *TextElement) Style() string { return "" }
+
+func (t *TextElement) Name() string { return "" }
