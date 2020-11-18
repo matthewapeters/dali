@@ -43,6 +43,7 @@ func (br *BR) Style() string { return br.StyleName }
 //Header is a header
 type Header struct {
 	StyleName string
+	ID        string
 	Level     HeaderLevel
 	Text      string
 	Element
@@ -57,9 +58,10 @@ func (h *Header) String() string {
 }
 
 //NewHeader produces a new header element
-func NewHeader(level HeaderLevel, text string) *Header {
+func NewHeader(level HeaderLevel, name, text string) *Header {
 	return &Header{
 		Text:  text,
+		ID:    name,
 		Level: level,
 	}
 }
@@ -69,8 +71,8 @@ func (h *Header) Class() string {
 	return fmt.Sprintf(`H%d`, h.Level)
 }
 
-//Name of header - nothing
-func (h *Header) Name() string { return "" }
+//Name of header
+func (h *Header) Name() string { return h.ID }
 
 //Style returns the style of the Header
 func (h *Header) Style() string {
