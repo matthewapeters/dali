@@ -8,8 +8,8 @@ import (
 func TestPane(t *testing.T) {
 
 	P := NewPane("TestPaneOne")
-	S := Span{Text: "Test Text", ID: "TestSpanOne"}
-	P.AddElement(S)
+	S := &Span{Text: "Test Text", ID: "TestSpanOne"}
+	P.Elements.AddElement(S)
 	html := fmt.Sprintf("%s", P)
 	expected := `<div id="TestPaneOne"><span name="TestSpanOne">Test Text</span></div>`
 	if html != expected {

@@ -6,18 +6,8 @@ import "fmt"
 type Pane struct {
 	ID        string
 	StyleName string
-	Elements  Elements
+	Elements  *Elements
 	Element
-}
-
-// Panes is a map of Pane elements
-type Panes struct {
-	List []*Pane
-}
-
-// Add a Pane the list of Panes
-func (ps *Panes) Add(p *Pane) {
-	ps.List = append(ps.List, p)
 }
 
 //String for Pane
@@ -30,25 +20,12 @@ func (p *Pane) String() string {
 	return fmt.Sprintf(`<div id="%s"%s>%s</div>`, p.Name(), style, p.Elements)
 }
 
-//String for Panes
-func (ps *Panes) String() string {
-	html := ""
-	for _, p := range ps.List {
-		html = fmt.Sprintf(`%s%s`, html, p)
-	}
-	return html
-}
-
-//AddElement adds an element to a Pane
-func (p *Pane) AddElement(el Element) {
-	p.Elements = append(p.Elements, el)
-}
-
 // NewPane generates a new Pane
 func NewPane(name string) *Pane {
+	els := Elements{slice: []*Element{}}
 	return &Pane{
 		ID:       name,
-		Elements: Elements([]Element{}),
+		Elements: &els,
 	}
 }
 

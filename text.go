@@ -11,10 +11,14 @@ func Text(t string) *TextElement {
 	return &TextElement{text: t}
 }
 
+//String stringer for TextElement
 func (t *TextElement) String() string { return t.text }
 
+//Class for TextElement
 func (t *TextElement) Class() string { return "" }
 
+//Style for Text Element
 func (t *TextElement) Style() string { return "" }
 
+//Name for Text Element
 func (t *TextElement) Name() string { return "" }

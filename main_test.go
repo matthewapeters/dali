@@ -34,15 +34,15 @@ func TestWindow(t *testing.T) {
 	b := Button{}
 	b.ID = "buttonOne"
 	b.ButtonText = "This is Button One"
-	p.AddElement(b)
-	if len(p.Elements) != 1 {
-		t.Errorf("Expect there to be 1 element, got %d", len(p.Elements))
+	p.Elements.AddElement(b)
+	if len(p.Elements.slice) != 1 {
+		t.Errorf("Expect there to be 1 element, got %d", len(p.Elements.slice))
 	}
 	expected := `<div id="TestPane"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div>`
 	if fmt.Sprintf("%s", p) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, p)
 	}
-	w.AddPane(p)
+	w.Elements.AddElement(p)
 	expected = `<html><body><div id="TestPane"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body></html>`
 
 	if fmt.Sprintf("%s", w) != expected {
@@ -54,7 +54,7 @@ func TestWindow(t *testing.T) {
 		t.Errorf("Expected %s but got %s", expected, w)
 	}
 	p2 := NewPane("TestPaneTwo")
-	w.AddPane(p2)
+	w.Elements.AddElement(p2)
 	expected = `<html><body><div id="TestPane" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div><div id="TestPaneTwo"></div></body></html>`
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf(`Expected "%s" but got "%s"`, expected, w)
