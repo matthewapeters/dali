@@ -29,7 +29,7 @@ func (c *Canvas) String() string {
 	if c.ClassName != "" {
 		class = fmt.Sprintf(` class="%s"`, c.Class())
 	}
-	return fmt.Sprintf(`<canvas id="%s" width:="%d" height="%d"%s%s></canvas>`, c.ID, c.Width, c.Height, style, class)
+	return fmt.Sprintf(`<canvas id="%s" width="%dpx" height="%dpx"%s%s></canvas>`, c.ID, c.Width, c.Height, style, class)
 }
 
 // Name of Canvas
