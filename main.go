@@ -34,13 +34,13 @@ type Element interface {
 }
 
 //Elements is a map of Elements
-type Elements map[string]Element
+type Elements []Element
 
 //String for Elements
 func (els Elements) String() string {
 	html := ""
 	for _, el := range els {
-		html = fmt.Sprintf(`%s %s`, el, html)
+		html = fmt.Sprintf(`%s%s`, html, el)
 	}
 
 	return html
@@ -49,7 +49,7 @@ func (els Elements) String() string {
 // Window is the main application window
 type Window struct {
 	Width, Height int
-	Panes         Panes
+	Panes         *Panes
 	Style         StyleSheet
 	html          string
 	ui            lorca.UI
@@ -71,7 +71,7 @@ func (style StyleSheet) String() string {
 }
 
 // NewWindow creates a new Window
-func NewWindow(width, height int, profileDir string, styleSheet string, args ...string) Window {
+func NewWindow(width, height int, profileDir string, styleSheet string, args ...string) *Window {
 
 	minimalTemplate := `<html>%s<body>%s</body></html>`
 
@@ -80,22 +80,22 @@ func NewWindow(width, height int, profileDir string, styleSheet string, args ...
 		Height:     height,
 		html:       minimalTemplate,
 		Style:      StyleSheet{URL: styleSheet},
-		Panes:      Panes(map[string]Pane{}),
+		Panes:      &Panes{List: []*Pane{}},
 		ui:         nil,
 		Args:       args,
 		ProfileDir: profileDir,
 	}
-	return w
+	return &w
 }
 
 //String for Window
-func (w Window) String() string {
+func (w *Window) String() string {
 	return fmt.Sprintf(w.html, w.Style, w.Panes)
 
 }
 
 // Start extracts the application HTML and starts the UI
-func (w Window) Start() error {
+func (w *Window) Start() error {
 	newui, err := lorca.New("data:text/html,"+url.PathEscape(fmt.Sprintf("%s", w)), w.ProfileDir, w.Width, w.Height, w.Args...)
 	if err != nil {
 		return err
@@ -105,16 +105,16 @@ func (w Window) Start() error {
 }
 
 //AddPane adds a Pane to the window
-func (w Window) AddPane(p Pane) {
-	w.Panes[p.Name()] = p
+func (w *Window) AddPane(p *Pane) {
+	w.Panes.List = append(w.Panes.List, p)
 }
 
 //Close wraps lorca.UI.Close()
-func (w Window) Close() {
+func (w *Window) Close() {
 	w.ui.Close()
 }
 
 //GetUI is a temporary wrapper for retrieving the lorca.UI
-func (w Window) GetUI() lorca.UI {
+func (w *Window) GetUI() lorca.UI {
 	return w.ui
 }
