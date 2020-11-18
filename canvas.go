@@ -11,7 +11,16 @@ type Canvas struct {
 	Element
 }
 
-func (c Canvas) String() string {
+//NewCanvas creates a new Canvas
+func NewCanvas(width, height int, name string) *Canvas {
+	return &Canvas{
+		ID:     name,
+		Width:  width,
+		Height: height,
+	}
+}
+
+func (c *Canvas) String() string {
 	style := ""
 	class := ""
 	if c.StyleName != "" {
@@ -24,13 +33,13 @@ func (c Canvas) String() string {
 }
 
 // Name of Canvas
-func (c Canvas) Name() string { return c.ID }
+func (c *Canvas) Name() string { return c.ID }
 
 // Class of the canvas
-func (c Canvas) Class() string { return c.ClassName }
+func (c *Canvas) Class() string { return c.ClassName }
 
 // Clickable is false on Canvas
-func (c Canvas) Clickable() bool { return false }
+func (c *Canvas) Clickable() bool { return false }
 
 //Styles of the Canvas
-func (c Canvas) Styles() string { return c.StyleName }
+func (c *Canvas) Styles() string { return c.StyleName }
