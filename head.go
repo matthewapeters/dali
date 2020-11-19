@@ -84,11 +84,16 @@ func (t *TitleElement) Style() string { return "" }
 //BodyElement for holding the body of the page
 type BodyElement struct {
 	Elements *Elements
+	OnLoad   string
 	Element
 }
 
 func (b *BodyElement) String() string {
-	return fmt.Sprintf(`<body>%s</body>`, b.Elements)
+	onLoad := ""
+	if b.OnLoad != "" {
+		onLoad = fmt.Sprintf(` onload="%s"`, b.OnLoad)
+	}
+	return fmt.Sprintf(`<body%s>%s</body>`, onLoad, b.Elements)
 }
 
 //NewBodyElement creates a body element
