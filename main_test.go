@@ -42,7 +42,17 @@ func TestWindow(t *testing.T) {
 	if fmt.Sprintf("%s", p) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, p)
 	}
-	w.Elements.AddElement(p)
+
+	// Add the panes to the body
+	body := NewBodyElement()
+	body.Elements.AddElement(p)
+
+	expected = `<body><div id="TestPane"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body>`
+	if fmt.Sprintf("%s", body) != expected {
+		t.Errorf(`expected "%s" but got "%s"`, expected, body)
+	}
+
+	w.Elements.AddElement(body)
 	expected = `<html><body><div id="TestPane"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body></html>`
 
 	if fmt.Sprintf("%s", w) != expected {
@@ -54,7 +64,7 @@ func TestWindow(t *testing.T) {
 		t.Errorf("Expected %s but got %s", expected, w)
 	}
 	p2 := NewPane("TestPaneTwo")
-	w.Elements.AddElement(p2)
+	body.Elements.AddElement(p2)
 	expected = `<html><body><div id="TestPane" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div><div id="TestPaneTwo"></div></body></html>`
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf(`Expected "%s" but got "%s"`, expected, w)

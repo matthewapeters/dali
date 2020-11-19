@@ -61,7 +61,7 @@ type Window struct {
 	html          string
 	ui            lorca.UI
 	ProfileDir    string
-	Elements      Elements
+	Elements      *Elements
 	Args          []string
 }
 
@@ -81,23 +81,23 @@ func (style StyleSheet) String() string {
 // NewWindow creates a new Window
 func NewWindow(width, height int, profileDir string, styleSheet string, args ...string) *Window {
 
-	minimalTemplate := `<html>%s<body>%s</body></html>`
+	els := Elements{slice: []*Element{}}
 
 	w := Window{
 		Width:      width,
 		Height:     height,
-		html:       minimalTemplate,
 		Style:      StyleSheet{URL: styleSheet},
 		ui:         nil,
 		Args:       args,
 		ProfileDir: profileDir,
+		Elements:   &els,
 	}
 	return &w
 }
 
 //String for Window
 func (w *Window) String() string {
-	return fmt.Sprintf(w.html, w.Style, w.Elements)
+	return fmt.Sprintf(`<html>%s</html>`, w.Elements)
 
 }
 

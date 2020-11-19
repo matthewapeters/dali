@@ -81,3 +81,9 @@ type BodyElement struct {
 func (b *BodyElement) String() string {
 	return fmt.Sprintf(`<body>%s</body>`, b.Elements)
 }
+
+//NewBodyElement creates a body element
+func NewBodyElement() *BodyElement {
+	els := Elements{slice: []*Element{}}
+	return &BodyElement{Elements: &els}
+}
