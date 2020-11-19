@@ -23,6 +23,15 @@ func (h *HeadElement) Style() string { return "" }
 // Name of head - not applicable
 func (h *HeadElement) Name() string { return "" }
 
+// NewHeadElement to create a new Head Element
+func NewHeadElement() *HeadElement {
+	els := Elements{slice: []*Element{}}
+
+	return &HeadElement{
+		Elements: &els,
+	}
+}
+
 // ScriptElement is for scripts
 type ScriptElement struct {
 	URL  string
