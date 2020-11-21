@@ -54,6 +54,12 @@ func (els *Elements) AddElement(e Element) {
 	els.slice = newSlice
 }
 
+// Binding defines which JavaScript functions should be bound to Go functions
+type Binding struct {
+	FunctionName  string
+	BoundFunction func()
+}
+
 // Window is the main application window
 type Window struct {
 	Width, Height int
@@ -63,6 +69,7 @@ type Window struct {
 	ProfileDir    string
 	Elements      *Elements
 	Args          []string
+	Bindings      []Binding
 }
 
 // StyleSheet references an external stylesheet to load
@@ -91,6 +98,7 @@ func NewWindow(width, height int, profileDir string, styleSheet string, args ...
 		Args:       args,
 		ProfileDir: profileDir,
 		Elements:   &els,
+		Bindings:   []Binding{},
 	}
 	return &w
 }
@@ -101,6 +109,13 @@ func (w *Window) String() string {
 
 }
 
+//Bind maps a javascript function to a golang function
+func (w *Window) Bind(jscriptFunction string, golangFunction func()) {
+	w.Bindings = append(
+		w.Bindings, Binding{FunctionName: jscriptFunction,
+			BoundFunction: golangFunction})
+}
+
 // Start extracts the application HTML and starts the UI
 func (w *Window) Start() error {
 	newui, err := lorca.New("data:text/html,"+url.PathEscape(fmt.Sprintf("%s", w)), w.ProfileDir, w.Width, w.Height, w.Args...)
@@ -108,6 +123,13 @@ func (w *Window) Start() error {
 		return err
 	}
 	w.ui = newui
+	//Apply Bindings
+	for _, bound := range w.Bindings {
+		err = newui.Bind(bound.FunctionName, bound.BoundFunction)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
