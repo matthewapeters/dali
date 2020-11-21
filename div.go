@@ -2,16 +2,16 @@ package dali
 
 import "fmt"
 
-// Pane is a page within a Window
-type Pane struct {
+// Div is a page within a Window
+type Div struct {
 	ID        string
 	StyleName string
 	Elements  *Elements
 	Element
 }
 
-//String for Pane
-func (p *Pane) String() string {
+//String for Div
+func (p *Div) String() string {
 	style := ""
 	if p.StyleName != "" {
 		style = fmt.Sprintf(` style="%s"`, p.StyleName)
@@ -20,21 +20,21 @@ func (p *Pane) String() string {
 	return fmt.Sprintf(`<div id="%s"%s>%s</div>`, p.Name(), style, p.Elements)
 }
 
-// NewPane generates a new Pane
-func NewPane(name string) *Pane {
+// NewDiv generates a new Div
+func NewDiv(name string) *Div {
 	els := Elements{slice: []*Element{}}
-	return &Pane{
+	return &Div{
 		ID:       name,
 		Elements: &els,
 	}
 }
 
-//Name returns the name of the Pane
-func (p *Pane) Name() string {
+//Name returns the name of the Div
+func (p *Div) Name() string {
 	return p.ID
 }
 
-//Class of a pane is DIV
-func (p *Pane) Class() string {
+//Class of a div is DIV
+func (p *Div) Class() string {
 	return "DIV"
 }
