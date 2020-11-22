@@ -47,8 +47,8 @@ func TestWindow(t *testing.T) {
 		t.Errorf(`expected "%s" but got "%s"`, expected, p)
 	}
 
-	// Add the divs to the body
-	body := NewBodyElement()
+	// Add the divs to the body (body has no onLoad function)
+	body := NewBodyElement("")
 	body.Elements.AddElement(p)
 
 	expected = `<body><div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body>`

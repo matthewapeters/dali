@@ -102,14 +102,14 @@ func (t *TitleElement) Style() string { return "" }
 //BodyElement for holding the body of the page
 type BodyElement struct {
 	Elements *Elements
-	OnLoad   string
 	Element
+	Binding *Binding
 }
 
 func (b *BodyElement) String() string {
 	onLoad := ""
-	if b.OnLoad != "" {
-		onLoad = fmt.Sprintf(` onload="%s"`, b.OnLoad)
+	if b.Binding != nil {
+		onLoad = fmt.Sprintf(` onload="%s"`, b.Binding.FunctionName)
 	}
 	return fmt.Sprintf(`<body%s>%s</body>`, onLoad, b.Elements)
 }
@@ -117,8 +117,19 @@ func (b *BodyElement) String() string {
 //Children return the Elements
 func (b *BodyElement) Children() *Elements { return b.Elements }
 
+// Bindings returns the Binding
+func (b *BodyElement) Bindings() *Binding { return b.Binding }
+
 //NewBodyElement creates a body element
-func NewBodyElement() *BodyElement {
+func NewBodyElement(onLoad string) *BodyElement {
 	els := Elements{slice: []*Element{}}
-	return &BodyElement{Elements: &els}
+	var binding *Binding
+	if onLoad != "" {
+		binding = &Binding{FunctionName: onLoad}
+	}
+
+	return &BodyElement{
+		Elements: &els,
+		Binding:  binding,
+	}
 }
