@@ -109,7 +109,7 @@ type BodyElement struct {
 func (b *BodyElement) String() string {
 	onLoad := ""
 	if b.Binding != nil {
-		onLoad = fmt.Sprintf(` onload="%s"`, b.Binding.FunctionName)
+		onLoad = fmt.Sprintf(` onload="%s()"`, b.Binding.FunctionName)
 	}
 	return fmt.Sprintf(`<body%s>%s</body>`, onLoad, b.Elements)
 }
