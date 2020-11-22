@@ -76,7 +76,6 @@ type Image struct {
 	ID            string
 	Width, Height int
 	URL           string
-	ClassName     string
 	StyleName     string
 	Alt           string
 	AreaMap       Map
@@ -115,8 +114,14 @@ func (i *Image) String() string {
 	return img
 }
 
+//Bindings returns nil
+func (i *Image) Bindings() *Binding { return nil }
+
+//Children returns an empty Elements
+func (i *Image) Children() *Elements { return &Elements{slice: []*Element{}} }
+
 //Class of image
-func (i *Image) Class() string { return i.ClassName }
+func (i *Image) Class() string { return "image" }
 
 //Style of image
 func (i *Image) Style() string { return i.StyleName }

@@ -11,6 +11,12 @@ func Text(t string) *TextElement {
 	return &TextElement{text: t}
 }
 
+//Children returns an empty Elements
+func (t *TextElement) Children() *Elements { return &Elements{slice: []*Element{}} }
+
+// Bindings returns nil
+func (t *TextElement) Bindings() *Binding { return nil }
+
 //String stringer for TextElement
 func (t *TextElement) String() string { return t.text }
 

@@ -31,6 +31,8 @@ type Element interface {
 	Name() string
 	Clickable() bool
 	Styles() Styles
+	Children() *Elements
+	Bindings() *Binding
 }
 
 //Elements is a slice of Elements
@@ -116,6 +118,29 @@ func (w *Window) Bind(jscriptFunction string, golangFunction func()) {
 			BoundFunction: golangFunction})
 }
 
+//BindChildren is used to recursively
+func (w *Window) BindChildren(el *Element) {
+
+	if el == nil {
+		for _, el := range w.Elements.slice {
+			w.BindChildren((el))
+		}
+		return
+	}
+
+	b := (*el).Bindings()
+	if b != nil {
+		if b.BoundFunction != nil {
+			w.Bind(b.FunctionName, b.BoundFunction)
+		}
+
+	}
+	els := (*el).Children()
+	for _, c := range els.slice {
+		w.BindChildren(c)
+	}
+}
+
 // Start extracts the application HTML and starts the UI
 func (w *Window) Start() error {
 	newui, err := lorca.New("data:text/html,"+url.PathEscape(fmt.Sprintf("%s", w)), w.ProfileDir, w.Width, w.Height, w.Args...)
@@ -123,6 +148,9 @@ func (w *Window) Start() error {
 		return err
 	}
 	w.ui = newui
+
+	w.BindChildren(nil)
+
 	//Apply Bindings
 	for _, bound := range w.Bindings {
 		err = newui.Bind(bound.FunctionName, bound.BoundFunction)

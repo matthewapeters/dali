@@ -18,23 +18,27 @@ func TestStyleSheet(t *testing.T) {
 }
 
 func TestButton(t *testing.T) {
-	b := Button{
-		ID:         "MyTestButton",
-		ButtonText: "This Is A Button",
-	}
+	b := NewButton("This Is A Button", "MyTestButton", "do_MyTestButton")
 	expected := `<button id="MyTestButton" onclick="do_MyTestButton()" >This Is A Button</button>`
 	if fmt.Sprintf("%s", b) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, b)
+	}
+	b.Binding.BoundFunction = func() { fmt.Println("Yaba Daba Do!") }
+	d := NewDiv("")
+	d.Elements.AddElement(b)
+
+	W := NewWindow(100, 100, "", "")
+	W.Elements.AddElement(d)
+	W.BindChildren(nil)
+	if len(W.Bindings) != 1 {
+		t.Errorf("Expected 1 binding, found %d", len(W.Bindings))
 	}
 }
 
 func TestWindow(t *testing.T) {
 	w := NewWindow(300, 300, "/home/matthewp/Downloads", "")
 	p := NewDiv("TestDiv")
-	b := Button{}
-	b.ID = "buttonOne"
-	b.ButtonText = "This is Button One"
-	p.Elements.AddElement(b)
+	p.Elements.AddElement(NewButton("This is Button One", "buttonOne", "do_buttonOne"))
 	if len(p.Elements.slice) != 1 {
 		t.Errorf("Expect there to be 1 element, got %d", len(p.Elements.slice))
 	}

@@ -8,7 +8,14 @@ type Div struct {
 	StyleName string
 	Elements  *Elements
 	Element
+	Binding
 }
+
+// Bindings returns the binding
+func (p *Div) Bindings() *Binding { return &p.Binding }
+
+//Children returns the Elements
+func (p *Div) Children() *Elements { return p.Elements }
 
 //String for Div
 func (p *Div) String() string {
