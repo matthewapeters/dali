@@ -16,7 +16,7 @@ func (b *Button) String() string {
 	if b.StyleExpression != "" {
 		style = fmt.Sprintf(` style="%s"`, b.StyleExpression)
 	}
-	return fmt.Sprintf(`<button id="%s" onclick="%s()" %s>%s</button>`, b.Name(), b.Name(), style, b.ButtonText)
+	return fmt.Sprintf(`<button id="%s" onclick="%s()" %s>%s</button>`, b.Name(), b.Binding.FunctionName, style, b.ButtonText)
 }
 
 // Children will return an empty Elements
