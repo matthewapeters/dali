@@ -88,8 +88,10 @@ Example Three is more complex to build than the first two examples:
 
 ```go
 $ cd examples/three
+# This step is necessary because I am not committing Dali and Lorca recursively in the examples!  See .gitignore for details
+$ go mod vendor
 $ go build .
-$ ./three
+$ ./examples_three
 ```
 The objective for this example was to identify highly used Javascripting in order to improve the Dali feature set, and to produce an application which exercised the power of Golang's concurrency and speed.
 
