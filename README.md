@@ -79,6 +79,7 @@ _Example Two streams images of randomly sized, colored, and positioned dots.  Th
 
 ### Example Three ###  
 With collaborative help from Christopher R Peters on use of HSV coloring, viewport panning and coding and testing.
+![exampel three](./docs/example_three.png)
 ![exampel three](./docs/example_threeb.png)
 
 _Example Three will help you discover the Mandelbrot set. The automated "Start Iteration" uses an increasingly higher-resolution fractal drawing through increased iteration. Each pixel is iterated over n times from 0 to 5000.  The "Pause Iterations"/"Resume Iterations" button allows you to stop and change your focal point on the Imaginary Number Place.  For performance, chunks of the image are processed in their own go routine.  Chunks quantities are based on the number of CPUs available and the number of iterations requested.  Each of the variables is also directly editable, and buttons provide point-and-click exploration of the Mandelbrot set.  You can save your favorite views and come back to them later.  A number of palettes are provided to delight the user in their exploration._
