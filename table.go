@@ -66,6 +66,7 @@ type Table struct {
 	RowCount    int
 	Rows
 	Base
+	Elements *Elements
 }
 
 func (tab *Table) String() string {
@@ -78,19 +79,10 @@ func (tab *Table) String() string {
 }
 
 // NewTableElement creates a new Table element
-func NewTableElement(name string, rows, columns int) *Table {
+func NewTableElement(name string, columns, rows int) *Table {
 	tableRows := []*Row{}
 
-	for rowNum := 0; rowNum < rows; rowNum++ {
-		row := Row{}
-		row.Cells = Cells{}
-		for colNum := 0; colNum < columns; colNum++ {
-			row.Cells = append(row.Cells, &Cell{Elements: &Elements{slice: []*Element{}}})
-		}
-		tableRows = append(tableRows, &row)
-	}
-
-	return &Table{
+	tab := &Table{
 		ColumnCount: columns,
 		RowCount:    rows,
 		Base: Base{
@@ -98,18 +90,44 @@ func NewTableElement(name string, rows, columns int) *Table {
 		},
 		Rows: tableRows,
 	}
+
+	for rowNum := 0; rowNum < rows; rowNum++ {
+		row := Row{}
+		row.Cells = Cells{}
+		for colNum := 0; colNum < columns; colNum++ {
+			c := Cell{
+				Base:     Base{ID: fmt.Sprintf(`%s_%d_%d`, name, rowNum, colNum)},
+				Elements: &Elements{slice: []*Element{}},
+			}
+			row.Cells = append(row.Cells, &c)
+			tab.Elements.AddElement(&c)
+		}
+		tableRows = append(tableRows, &row)
+	}
+
+	tab.Rows = tableRows
+
+	return tab
+}
+
+//Bindings returns empty Bindings on table
+func (tab *Table) Bindings() *Binding { return nil }
+
+//Children will return each of the table  Cells
+func (tab *Table) Children() *Elements {
+	return tab.Elements
 }
 
 // GetCell provides access to the cell at row, column
-func (tab *Table) GetCell(row, column int) (*Cell, error) {
+func (tab *Table) GetCell(column, row int) (*Cell, error) {
 	if row > tab.RowCount-1 || column > tab.ColumnCount-1 {
 		return nil, errors.New("dimensions out of range")
 	}
 	return tab.Rows[row].Cells[column], nil
 }
 
-// AddElement allows elements to be added to cells based on row and column
-func (tab *Table) AddElement(row, column int, element *Element) error {
+// AddCellElement allows elements to be added to cells based on row and column
+func (tab *Table) AddCellElement(column, row int, element *Element) error {
 	c, err := tab.GetCell(row, column)
 	if err != nil {
 		return err
