@@ -5,7 +5,8 @@ github.com/lucasb-eyer/go-colorful
 ## explicit
 github.com/matthewapeters/dali
 # github.com/zserge/lorca v0.1.9 => ../../vendor/github.com/zserge/lorca
-## explicit
 github.com/zserge/lorca
 # golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
 golang.org/x/net/websocket
+# github.com/matthewapeters/dali => ../../
+# github.com/zserge/lorca => ../../vendor/github.com/zserge/lorca

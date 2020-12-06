@@ -8,6 +8,6 @@ require (
 )
 
 replace (
-	github.com/matthewapeters/dali v0.1.1 => ../../
-	github.com/zserge/lorca v0.1.9 => ../../vendor/github.com/zserge/lorca
+	github.com/matthewapeters/dali => ../../
+	github.com/zserge/lorca => ../../vendor/github.com/zserge/lorca
 )
