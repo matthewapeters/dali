@@ -1,5 +1,3 @@
 examples/one/one
 examples/two/two
-examples/three/examples_three
-examples/three/vendor/github.com/matthewapeters
-examples/three/vendor/github.com/zserge
+examples/three/examples/three
