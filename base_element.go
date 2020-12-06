@@ -75,11 +75,13 @@ type Elements struct {
 
 //String for Elements
 func (els *Elements) String() string {
+	if els == nil {
+		return ""
+	}
 	html := ""
 	for _, el := range els.slice {
-		html = fmt.Sprintf(`%s%s`, html, *el)
+		html += fmt.Sprintf(`%s`, *el)
 	}
-
 	return html
 }
 
