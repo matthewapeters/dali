@@ -7,6 +7,8 @@ require (
 	github.com/matthewapeters/dali v0.1.1
 )
 
+exclude github.com/matthewapeters/dali v0.1.1
+
 replace (
 	github.com/matthewapeters/dali => ../../
 	github.com/zserge/lorca => ../../vendor/github.com/zserge/lorca
