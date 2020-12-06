@@ -85,7 +85,7 @@ func NewTableElement(name string, rows, columns int) *Table {
 		row := Row{}
 		row.Cells = Cells{}
 		for colNum := 0; colNum < columns; colNum++ {
-			row.Cells = append(row.Cells, &Cell{})
+			row.Cells = append(row.Cells, &Cell{Elements: &Elements{slice: []*Element{}}})
 		}
 		tableRows = append(tableRows, &row)
 	}
@@ -102,7 +102,7 @@ func NewTableElement(name string, rows, columns int) *Table {
 
 // GetCell provides access to the cell at row, column
 func (tab *Table) GetCell(row, column int) (*Cell, error) {
-	if row > tab.RowCount || column > tab.ColumnCount {
+	if row > tab.RowCount-1 || column > tab.ColumnCount-1 {
 		return nil, errors.New("dimensions out of range")
 	}
 	return tab.Rows[row].Cells[column], nil
