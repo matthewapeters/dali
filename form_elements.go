@@ -55,29 +55,6 @@ const (
 	URLInput = InputType("url")
 	//WeekInput          = InputType("week")
 	WeekInput = InputType("week")
-
-	//InputEventTypes
-
-	//OnBlur        = InputEventType("onblur")
-	OnBlur = InputEventType("onblur")
-	//OnChange      = InputEventType("onchange")
-	OnChange = InputEventType("onchange")
-	//OnFocus       = InputEventType("onfocus")
-	OnFocus = InputEventType("onfocus")
-	//OnInput       = InputEventType("oninput")
-	OnInput = InputEventType("oninput")
-	//OnInvalid     = InputEventType("oninvalid")
-	OnInvalid = InputEventType("oninvalid")
-	//OnReset       = InputEventType("onreset")
-	OnReset = InputEventType("onreset")
-	//OnSearch      = InputEventType("onsearch")
-	OnSearch = InputEventType("onsearch")
-	//OnSelect      = InputEventType("onselect")
-	OnSelect = InputEventType("onselect")
-	//OnSubmit      = InputEventType("onsubmit")
-	OnSubmit = InputEventType("onsubmit")
-	//OnContextmenu = InputEventType("oncontextmenu")
-	OnContextmenu = InputEventType("oncontextmenu")
 )
 
 // InputElement is for inputting values

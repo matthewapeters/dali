@@ -23,7 +23,7 @@ func TestButton(t *testing.T) {
 	if fmt.Sprintf("%s", b) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, b)
 	}
-	b.Binding.BoundFunction = func() { fmt.Println("Yaba Daba Do!") }
+	(*b.BoundEvents)[ClickEvent].BoundFunction = func() { fmt.Println("Yaba Daba Do!") }
 	d := NewDiv("")
 	d.Elements.AddElement(b)
 

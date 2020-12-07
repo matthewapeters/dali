@@ -95,9 +95,7 @@ func (t *TitleElement) Style() string { return "" }
 
 //BodyElement for holding the body of the page
 type BodyElement struct {
-	Style    string
 	Elements *Elements
-	Binding  *Binding
 	Base
 }
 
@@ -107,8 +105,10 @@ func (b *BodyElement) String() string {
 		style = fmt.Sprintf(` style="%s"`, b.Style)
 	}
 	onLoad := ""
-	if b.Binding != nil {
-		onLoad = fmt.Sprintf(` onload="%s()"`, b.Binding.FunctionName)
+	if b.BoundEvents != nil {
+		for e, bnd := range *b.BoundEvents {
+			onLoad += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
+		}
 	}
 	return fmt.Sprintf(`<body%s%s>%s</body>`, onLoad, style, b.Elements)
 }
@@ -117,7 +117,7 @@ func (b *BodyElement) String() string {
 func (b *BodyElement) Children() *Elements { return b.Elements }
 
 // Bindings returns the Binding
-func (b *BodyElement) Bindings() *Binding { return b.Binding }
+func (b *BodyElement) Bindings() *map[EventType]*Binding { return b.BoundEvents }
 
 //NewBodyElement creates a body element
 func NewBodyElement(onLoad string) *BodyElement {
@@ -129,6 +129,8 @@ func NewBodyElement(onLoad string) *BodyElement {
 
 	return &BodyElement{
 		Elements: &els,
-		Binding:  binding,
+		Base: Base{
+			ID:          "BODY",
+			BoundEvents: &map[EventType]*Binding{LoadEvent: binding}},
 	}
 }

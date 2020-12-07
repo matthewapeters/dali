@@ -7,26 +7,6 @@ import (
 	"github.com/zserge/lorca"
 )
 
-// EventType events
-type EventType string
-
-const (
-	//Mouse Events
-
-	//ClickEvent = EventType("click")
-	ClickEvent = EventType("click")
-	//MousedownEvent = EventType("mousedown")
-	MousedownEvent = EventType("mousedown")
-	//MouseUpEvent = EventType("mouseup")
-	MouseUpEvent = EventType("mouseup")
-	//MouseOverEvent = EventType("mouseover")
-	MouseOverEvent = EventType("mouseover")
-	//MouseMoveEvent = EventType("mousemove")
-	MouseMoveEvent = EventType("mousemove")
-	//MouseOutEvent = EventType("mouseout")
-	MouseOutEvent = EventType("mouseout")
-)
-
 //Element is an interface for describing an HTML element
 type Element interface {
 	String() string
