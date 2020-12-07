@@ -5,6 +5,30 @@ import (
 	"fmt"
 )
 
+//Heading is a column title
+type Heading struct {
+	Span int
+	Text string
+	Base
+}
+
+//Children return nil for Headings
+func (hd *Heading) Children() *Elements { return nil }
+
+//Bindings returns the bindings for Headings
+func (hd *Heading) Bindings() *Binding { return &hd.Binding }
+
+func (hd *Heading) String() string {
+	style := ""
+	if hd.Style != "" {
+		style = fmt.Sprintf(` style="%s"`, hd.Style)
+	}
+	return fmt.Sprintf(`<th id="%s"%s>%s</th>`, hd.Name, style, hd.Text)
+}
+
+//Headings is the collection of headings
+type Headings []*Heading
+
 //Cell is a cell
 type Cell struct {
 	Span int
@@ -15,10 +39,16 @@ type Cell struct {
 func (cell *Cell) String() string {
 	style := ""
 	if cell.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, cell.Styles())
+		style = fmt.Sprintf(` style="%s"`, cell.Style)
 	}
 	return fmt.Sprintf(`<td%s>%s</td>`, style, cell.Elements)
 }
+
+//Bindings returns nil for Cell
+func (cell *Cell) Bindings() *Binding { return nil }
+
+// Children returns the Cell's child elements
+func (cell *Cell) Children() *Elements { return cell.Elements }
 
 //Cells is a slice of Cell elements
 type Cells []*Cell
@@ -31,6 +61,25 @@ func (cells Cells) String() string {
 	}
 
 	return s
+}
+
+//HeadingRow is the row of headings
+type HeadingRow struct {
+	Headings
+	Base
+}
+
+func (hr *HeadingRow) String() string {
+	if len(hr.Headings) == 0 {
+		return ""
+	}
+	style := ""
+	if hr.Style != "" {
+		style = fmt.Sprintf(` style="%s"`, hr.Style)
+	}
+	return fmt.Sprintf(`	<th%s>
+%s	
+	</th>`, style, hr.Headings)
 }
 
 //Row is a row
@@ -60,11 +109,29 @@ func (rows Rows) String() string {
 	return s
 }
 
+//TBody is the table body
+type TBody struct {
+	Rows
+	Base
+}
+
+func (tb *TBody) String() string {
+	style := ""
+	if tb.Style != "" {
+		style = fmt.Sprintf(` style="%s"`, tb.Style)
+	}
+	return fmt.Sprintf(`
+<tbody%s>
+%s
+</tbody>`, style, tb.Rows)
+}
+
 // Table is a table
 type Table struct {
 	ColumnCount int
 	RowCount    int
-	Rows
+	HeadingRow  *HeadingRow
+	TBody       *TBody
 	Base
 	Elements *Elements
 }
@@ -75,12 +142,14 @@ func (tab *Table) String() string {
 		style = fmt.Sprintf(` style="%s"`, tab.Style)
 	}
 	return fmt.Sprintf(`<table id="%s"%s>
-%s</table>`, tab.Name(), style, tab.Rows)
+%s
+%s</table>`, tab.Name(), style, tab.HeadingRow, tab.TBody)
 }
 
 // NewTableElement creates a new Table element
-func NewTableElement(name string, columns, rows int) *Table {
+func NewTableElement(name string, columns, rows int, headings []string) *Table {
 	tableRows := []*Row{}
+	headingRow := HeadingRow{Headings: Headings{}}
 
 	tab := &Table{
 		ColumnCount: columns,
@@ -88,7 +157,20 @@ func NewTableElement(name string, columns, rows int) *Table {
 		Base: Base{
 			ID: name,
 		},
-		Rows: tableRows,
+		HeadingRow: &headingRow,
+		TBody:      &TBody{Rows: tableRows},
+		Elements:   &Elements{},
+	}
+
+	for i, h := range headings {
+		h := Heading{
+			Base: Base{
+				ID: fmt.Sprintf(`heading_%d`, i),
+			},
+			Text: h,
+		}
+		headingRow.Headings = append(headingRow.Headings, &h)
+		tab.Elements.AddElement(&h)
 	}
 
 	for rowNum := 0; rowNum < rows; rowNum++ {
@@ -105,7 +187,7 @@ func NewTableElement(name string, columns, rows int) *Table {
 		tableRows = append(tableRows, &row)
 	}
 
-	tab.Rows = tableRows
+	tab.TBody.Rows = tableRows
 
 	return tab
 }
@@ -123,7 +205,7 @@ func (tab *Table) GetCell(column, row int) (*Cell, error) {
 	if row > tab.RowCount-1 || column > tab.ColumnCount-1 {
 		return nil, errors.New("dimensions out of range")
 	}
-	return tab.Rows[row].Cells[column], nil
+	return tab.TBody.Rows[row].Cells[column], nil
 }
 
 // AddCellElement allows elements to be added to cells based on row and column
