@@ -6,11 +6,10 @@ import "fmt"
 type Div struct {
 	Base
 	Elements *Elements
-	Binding
 }
 
 // Bindings returns the binding
-func (p *Div) Bindings() *Binding { return &p.Binding }
+func (p *Div) Bindings() *map[EventType]*Binding { return p.BoundEvents }
 
 //Children returns the Elements
 func (p *Div) Children() *Elements { return p.Elements }

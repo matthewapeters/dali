@@ -50,7 +50,7 @@ func main() {
 
 	/*Add a body with no on-load function, and a blue background*/
 	Body := dali.NewBodyElement("")
-	Body.Style = "background:#5080FF;"
+	Body.SetStyle( "background:#5080FF;")
 
 	/*Add an H1 banner named pageBanner to the GUI*/
 	Banner := dali.NewHeader(dali.H1, "pageBanner", "This is Example One")

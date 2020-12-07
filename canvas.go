@@ -28,9 +28,6 @@ func (c *Canvas) String() string {
 	return fmt.Sprintf(`<canvas id="%s" width="%dpx" height="%dpx"%s></canvas>`, c.ID, c.Width, c.Height, style)
 }
 
-// Bindings returns nil
-func (c *Canvas) Bindings() *Binding { return nil }
-
 // Class of the canvas
 func (c *Canvas) Class() string { return "canvas" }
 

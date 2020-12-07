@@ -11,7 +11,7 @@ func TestImage(t *testing.T) {
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, i)
 	}
-	i.Style = `border:solid 1px #123456`
+	i.SetStyle(`border:solid 1px #123456`)
 	expected = `<image id="TestImageName" width="100" height="200" src="PathToImage" style="border:solid 1px #123456">`
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, i)

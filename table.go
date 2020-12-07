@@ -13,17 +13,23 @@ type Heading struct {
 }
 
 //Children return nil for Headings
-func (hd *Heading) Children() *Elements { return nil }
+func (hd *Heading) Children() *Elements { return &Elements{} }
 
 //Bindings returns the bindings for Headings
-func (hd *Heading) Bindings() *Binding { return &hd.Binding }
+func (hd *Heading) Bindings() *map[EventType]*Binding { return hd.BoundEvents }
 
 func (hd *Heading) String() string {
 	style := ""
+	binding := ""
 	if hd.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, hd.Style)
 	}
-	return fmt.Sprintf(`<th id="%s"%s>%s</th>`, hd.Name, style, hd.Text)
+	if hd.BoundEvents != nil {
+		for e, bnd := range *hd.BoundEvents {
+			binding += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
+		}
+	}
+	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.Name(), style, binding, hd.Text)
 }
 
 //Headings is the collection of headings
@@ -45,7 +51,7 @@ func (cell *Cell) String() string {
 }
 
 //Bindings returns nil for Cell
-func (cell *Cell) Bindings() *Binding { return nil }
+func (cell *Cell) Bindings() *map[EventType]*Binding { return nil }
 
 // Children returns the Cell's child elements
 func (cell *Cell) Children() *Elements { return cell.Elements }
@@ -77,9 +83,9 @@ func (hr *HeadingRow) String() string {
 	if hr.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, hr.Style)
 	}
-	return fmt.Sprintf(`	<th%s>
+	return fmt.Sprintf(`	<tr%s>
 %s	
-	</th>`, style, hr.Headings)
+	</tr>`, style, hr.Headings)
 }
 
 //Row is a row
@@ -216,4 +222,11 @@ func (tab *Table) AddCellElement(column, row int, element *Element) error {
 	}
 	c.Elements.AddElement(*element)
 	return nil
+}
+
+//SetCommonStyles will set all of the header and cells to the provided style
+func (tab *Table) SetCommonStyles(style string) {
+	for _, el := range tab.Children().slice {
+		(*el).SetStyle(style)
+	}
 }

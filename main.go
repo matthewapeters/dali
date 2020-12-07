@@ -23,6 +23,12 @@ func (s Styles) String() string {
 type Binding struct {
 	FunctionName  string
 	BoundFunction func()
+	EventType
+}
+
+//SetEvent identifies the event that the binding is triggered by
+func (b Binding) SetEvent(e EventType) {
+	b.EventType = e
 }
 
 // Window is the main application window
@@ -92,7 +98,7 @@ func (w *Window) BindChildren(el *Element) {
 		}
 		return
 	}
-	b := (*el).Bindings()
+	e, b := (*el).Bindings()
 	if b != nil {
 		if b.BoundFunction != nil {
 			w.Bind(b.FunctionName, b.BoundFunction)

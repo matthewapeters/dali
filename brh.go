@@ -27,9 +27,6 @@ func (br *BR) Children() *Elements {
 	return &Elements{slice: []*Element{}}
 }
 
-// Bindings returns nil
-func (br *BR) Bindings() *Binding { return nil }
-
 //LineBreak generates a BR tag
 func LineBreak() *BR {
 	return &BR{}
@@ -74,9 +71,6 @@ func NewHeader(level HeaderLevel, name, text string) *Header {
 		Level: level,
 	}
 }
-
-//Bindings return nil
-func (h *Header) Bindings() *Binding { return nil }
 
 //Children will return an empty Elements
 func (h *Header) Children() *Elements {

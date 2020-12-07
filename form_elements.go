@@ -6,7 +6,7 @@ import "fmt"
 type InputType string
 
 // InputEventType identifies the binding event type
-type InputEventType string
+type InputEventType EventType
 
 const (
 	//InputTypes
@@ -109,9 +109,12 @@ func (tf *InputElement) String() string {
 // NewInputElement creates an input element
 func NewInputElement(name string, inputType InputType) *InputElement {
 	return &InputElement{
-		Base:           Base{ID: name},
-		InputEventType: OnChange,
-		InputType:      inputType,
+		Base: Base{ID: name,
+			BoundEvents: &map[EventType]*Binding{
+				EventType(OnChange): &Binding{},
+			},
+		},
+		InputType: inputType,
 	}
 }
 
@@ -146,7 +149,6 @@ func (oes *OptionSlice) String() string {
 type SelectElement struct {
 	Base
 	Binding
-	InputEventType
 	Options *OptionSlice
 }
 
@@ -154,10 +156,9 @@ type SelectElement struct {
 func NewSelectElement(name, functionName string) *SelectElement {
 	os := OptionSlice([]*OptionElement{})
 	return &SelectElement{
-		Base:           Base{ID: name},
-		Binding:        Binding{FunctionName: functionName},
-		InputEventType: OnChange,
-		Options:        &os,
+		Base:    Base{ID: name},
+		Binding: Binding{FunctionName: functionName},
+		Options: &os,
 	}
 }
 
@@ -171,7 +172,7 @@ func (se *SelectElement) AddOption(label, value string) {
 func (se *SelectElement) String() string {
 	binding := ""
 	if se.Binding.FunctionName != "" {
-		binding = fmt.Sprintf(` %s="%s()"`, se.InputEventType, se.Binding.FunctionName)
+		binding = fmt.Sprintf(` %s="%s()"`, se.Binding.EventType, se.Binding.FunctionName)
 	}
 	return fmt.Sprintf(`<select id="%s"%s>%s</select>`, se.Name(), binding, se.Options)
 }

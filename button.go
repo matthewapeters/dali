@@ -7,15 +7,20 @@ type Button struct {
 	ButtonText string
 	Style      string
 	Base
-	Binding
 }
 
 func (b *Button) String() string {
 	style := ""
+	bindings := ""
 	if b.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, b.Style)
 	}
-	return fmt.Sprintf(`<button id="%s" onclick="%s()" %s>%s</button>`, b.Name(), b.Binding.FunctionName, style, b.ButtonText)
+	if b.BoundEvents != nil {
+		for e, bnd := range *b.BoundEvents {
+			bindings += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
+		}
+	}
+	return fmt.Sprintf(`<button id="%s" onclick="%s()" %s>%s</button>`, b.Name(), bindings, style, b.ButtonText)
 }
 
 // Children will return an empty Elements
@@ -31,24 +36,15 @@ func (b *Button) Clickable() bool {
 	return true
 }
 
-//OnClick returns the name of the onclick function
-func (b *Button) OnClick() string {
-	return fmt.Sprintf("on_%s()", b.Name())
-}
-
-// BindFunction will bind the button to this go function
-func (b *Button) BindFunction(f func()) {
-	b.Binding.BoundFunction = f
-}
-
-//Bindings returns the bindings for the button
-func (b *Button) Bindings() *Binding { return &b.Binding }
-
 //NewButton creates a new button
 func NewButton(label, name, funcName string) *Button {
+
 	return &Button{
-		Base:       Base{ID: name},
+		Base: Base{ID: name,
+			BoundEvents: &map[EventType]*Binding{
+				ClickEvent: &Binding{FunctionName: funcName},
+			},
+		},
 		ButtonText: label,
-		Binding:    Binding{FunctionName: funcName},
 	}
 }

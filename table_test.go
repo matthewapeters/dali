@@ -6,7 +6,7 @@ import (
 )
 
 func TestTable(t *testing.T) {
-	tab := NewTableElement("testTable", 1, 1)
+	tab := NewTableElement("testTable", 1, 1, []string{})
 	expected := `<table id="testTable">
 	<tr>
 		<td></td>
@@ -20,7 +20,7 @@ but got:
 %s`, expected, html)
 	}
 
-	tab = NewTableElement("testTable", 5, 2)
+	tab = NewTableElement("testTable", 5, 2, []string{})
 	expected = `<table id="testTable">
 	<tr>
 		<td></td>
@@ -54,13 +54,13 @@ but got:
 		}
 	}
 
-	tab = NewTableElement("cellTest", 2, 2)
+	tab = NewTableElement("cellTest", 2, 2, []string{})
 	var b, b2 Element
 	b = NewButton("0,0", "button1", "doButton1")
 	b2 = NewButton("1,1", "button2", "doButton2")
 
-	tab.AddElement(0, 0, &b)
-	tab.AddElement(1, 1, &b2)
+	tab.AddCellElement(0, 0, &b)
+	tab.AddCellElement(1, 1, &b2)
 
 	expected = `<table id="cellTest">
 	<tr>

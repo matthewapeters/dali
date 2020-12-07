@@ -106,7 +106,7 @@ func main() {
 
 	// Create an image element
 	img := dali.NewImage("randPic", 300, 300, "")
-	img.Style = "border:solid 1px #000000;"
+	img.SetStyle("border:solid 1px #000000;")
 
 	// Create a body element
 	Body := dali.NewBodyElement("")

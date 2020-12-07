@@ -231,17 +231,18 @@ func main() {
 	Body := dali.NewBodyElement("first_view")
 
 	div := dali.NewDiv("displayDiv")
-	div.Style = `background-color:#BBBBBB;width:1260;height:900;`
+	div.SetStyle(`background-color:#BBBBBB;width:1260;height:900;`)
 
 	display := dali.NewImage("display", 900, 700, "")
-	display.Style = `border:solid 1px #333333;display:block;margin:auto;`
+	display.SetStyle(`border:solid 1px #333333;display:block;margin:auto;`)
 	div.Elements.AddElement(display)
-	div.Elements.AddElement(dali.LineBreak())
+	//div.Elements.AddElement(dali.LineBreak())
 
-	tabl := dali.NewTableElement("menus", 3, 5, []string{})
-	tabl.Style = "width:100%;padding:0px;"
+	tabl := dali.NewTableElement("menus", 3, 5, []string{"", "Explore the Mandelbrot Set", ""})
+	tabl.SetStyle("width:100%;padding:0px;")
+	tabl.SetCommonStyles("padding:0px;margin:none;")
 	a, _ := tabl.GetCell(0, 0)
-	a.Style = "width:33%;"
+	a.SetStyle("width:33%;")
 	a.Elements.AddElement(dali.LineBreak())
 
 	startButton := dali.NewButton("Start Iterations", "start", "start_iterations")
@@ -290,7 +291,7 @@ func main() {
 	zoomOutButton := dali.NewButton("Zoom Out", "zoomOut", "do_zoom_out")
 
 	zoomLevel := dali.NewInputElement("zoomLevel", dali.NumberInput)
-	zoomLevel.Style = "width:14em;"
+	zoomLevel.SetStyle("width:14em;")
 	zoomLevel.Text = "1.0"
 	zoomLevel.Binding.FunctionName = "zoomLevelUpdate"
 
@@ -303,7 +304,7 @@ func main() {
 
 	focalPointDiv := dali.NewDiv("focalPoint")
 	focalPointReal := dali.NewInputElement("focalPointReal", dali.NumberInput)
-	focalPointReal.Style = "width:15em;"
+	focalPointReal.SetStyle("width:15em;")
 	focalPointReal.Text = fmt.Sprintf("%f", real(VP.ImaginaryPlaneFocalPoint))
 	focalPointReal.Binding.FunctionName = "updateFocalPointReal"
 	focalPointReal.InputEventType = dali.OnBlur
@@ -311,7 +312,7 @@ func main() {
 	focalPointImaginary.Text = fmt.Sprintf("%f", imag(VP.ImaginaryPlaneFocalPoint))
 	focalPointImaginary.Binding.FunctionName = "updateFocalPointImaginary"
 	focalPointImaginary.InputEventType = dali.OnBlur
-	focalPointImaginary.Style = "width:15em;"
+	focalPointImaginary.SetStyle("width:15em;")
 	focalPointDiv.Elements.AddElement(&dali.Span{Text: "Focal Point: Real: "})
 	focalPointDiv.Elements.AddElement(focalPointReal)
 	focalPointDiv.Elements.AddElement(&dali.Span{Text: " Imaginary: "})
@@ -326,7 +327,7 @@ func main() {
 	panDownButton.BoundFunction = func() { PanDown(display, iterations, focalPointImaginary, VP, &control) }
 	panUpButton.BoundFunction = func() { PanUp(display, iterations, focalPointImaginary, VP, &control) }
 	iterations.Text = "1000"
-	iterations.Style = "width:10em;"
+	iterations.SetStyle("width:10em;")
 	iterations.Binding.FunctionName = "updateIterations"
 	iterations.InputEventType = dali.OnBlur
 	iterationsDiv.Elements.AddElement(&dali.Span{Text: "Iterations: "})

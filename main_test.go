@@ -62,7 +62,7 @@ func TestWindow(t *testing.T) {
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf("Expected %s but got %s", expected, w)
 	}
-	p.Style = "border:solid 1px #000000"
+	p.SetStyle("border:solid 1px #000000")
 	expected = `<html><body><div id="TestDiv" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body></html>`
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf("Expected %s but got %s", expected, w)
