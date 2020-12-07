@@ -98,10 +98,12 @@ func (w *Window) BindChildren(el *Element) {
 		}
 		return
 	}
-	e, b := (*el).Bindings()
+	b := (*el).Bindings()
 	if b != nil {
-		if b.BoundFunction != nil {
-			w.Bind(b.FunctionName, b.BoundFunction)
+		for _, bnd := range *b {
+			if bnd.BoundFunction != nil {
+				w.Bind(bnd.FunctionName, bnd.BoundFunction)
+			}
 		}
 
 	}
