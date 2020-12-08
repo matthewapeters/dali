@@ -77,7 +77,7 @@ func (tf *InputElement) String() string {
 	}
 	if tf.BoundEvents != nil {
 		for e, bnd := range *tf.BoundEvents {
-			boundEvent += fmt.Sprintf(`%s="%s()"`, e, bnd.FunctionName)
+			boundEvent += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
 		}
 	}
 
@@ -126,7 +126,6 @@ func (oes *OptionSlice) String() string {
 //SelectElement provides a selection drop-down
 type SelectElement struct {
 	Base
-	Binding
 	Options *OptionSlice
 }
 
@@ -137,7 +136,7 @@ func NewSelectElement(name, functionName string) *SelectElement {
 		Base: Base{
 			ID: name,
 			BoundEvents: &map[EventType]*Binding{
-				ChangeEvent: &Binding{FunctionName: fmt.Sprintf(`%s_select`, name)},
+				ChangeEvent: &Binding{FunctionName: functionName},
 			},
 		},
 		Options: &os,
@@ -153,8 +152,10 @@ func (se *SelectElement) AddOption(label, value string) {
 
 func (se *SelectElement) String() string {
 	binding := ""
-	if se.Binding.FunctionName != "" {
-		binding = fmt.Sprintf(` %s="%s()"`, se.Binding.EventType, se.Binding.FunctionName)
+	if se.BoundEvents != nil {
+		for e, bnd := range *se.BoundEvents {
+			binding += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
+		}
 	}
 	return fmt.Sprintf(`<select id="%s"%s>%s</select>`, se.Name(), binding, se.Options)
 }

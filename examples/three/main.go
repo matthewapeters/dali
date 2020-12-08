@@ -219,7 +219,7 @@ func main() {
 	Head.Elements.AddElement(title)
 	Head.Elements.AddElement(&dali.ScriptElement{Text: `
 	function draw_mandelbrot_set(){}
-	async function first_view(){
+	async function body_on_load(){
 		await new Promise(r => setTimeout(r, 200));
 		pick_favorite_spot();
 		//draw_mandelbrot_set();
@@ -246,12 +246,12 @@ func main() {
 	a.Elements.AddElement(dali.LineBreak())
 
 	startButton := dali.NewButton("Start Iterations", "start", "start_iterations")
-	startButton.BoundFunction = func() {
+	startButton.SetBoundFunction(dali.ClickEvent, func() {
 		startButton.Disable()
 		FindMandelbrotSet(Window, display, &control, VP)
 		startButton.Enable()
 		Window.GetUI().Eval(`document.getElementById("start").disabled=false;`)
-	}
+	})
 
 	pauseButton := dali.NewButton("Pause Iteration", "pause", "pause_iteration")
 
@@ -271,7 +271,7 @@ func main() {
 		}
 	}()
 
-	pauseButton.BoundFunction = func() { toggle <- true }
+	pauseButton.SetBoundFunction(dali.ClickEvent, func() { toggle <- true })
 
 	palette := dali.NewSelectElement("palette", "pick_palette")
 	palette.AddOption("Dr Seussy", "1")
@@ -293,9 +293,6 @@ func main() {
 	zoomLevel := dali.NewInputElement("zoomLevel", dali.NumberInput)
 	zoomLevel.SetStyle("width:14em;")
 	zoomLevel.Text = "1.0"
-	zoomLevel.Binding.FunctionName = "zoomLevelUpdate"
-
-	zoomLevel.InputEventType = dali.OnBlur
 
 	panLeftButton := dali.NewButton("Pan Left", "left", "do_pan_left")
 	panRightButton := dali.NewButton("Pan Right", "right", "do_pan_right")
@@ -306,11 +303,9 @@ func main() {
 	focalPointReal := dali.NewInputElement("focalPointReal", dali.NumberInput)
 	focalPointReal.SetStyle("width:15em;")
 	focalPointReal.Text = fmt.Sprintf("%f", real(VP.ImaginaryPlaneFocalPoint))
-	focalPointReal.Binding.FunctionName = "updateFocalPointReal"
 	focalPointReal.InputEventType = dali.OnBlur
 	focalPointImaginary := dali.NewInputElement("focalPointImaginary", dali.NumberInput)
 	focalPointImaginary.Text = fmt.Sprintf("%f", imag(VP.ImaginaryPlaneFocalPoint))
-	focalPointImaginary.Binding.FunctionName = "updateFocalPointImaginary"
 	focalPointImaginary.InputEventType = dali.OnBlur
 	focalPointImaginary.SetStyle("width:15em;")
 	focalPointDiv.Elements.AddElement(&dali.Span{Text: "Focal Point: Real: "})
@@ -320,16 +315,14 @@ func main() {
 
 	iterationsDiv := dali.NewDiv("iterationMenu")
 	iterations := dali.NewInputElement("iterations", dali.NumberInput)
-	zoomOutButton.BoundFunction = func() { ZoomOut(display, iterations, zoomLevel, VP, &control) }
-	zoomInButton.BoundFunction = func() { ZoomIn(display, iterations, zoomLevel, VP, &control) }
-	panLeftButton.BoundFunction = func() { PanLeft(display, iterations, focalPointReal, VP, &control) }
-	panRightButton.BoundFunction = func() { PanRight(display, iterations, focalPointReal, VP, &control) }
-	panDownButton.BoundFunction = func() { PanDown(display, iterations, focalPointImaginary, VP, &control) }
-	panUpButton.BoundFunction = func() { PanUp(display, iterations, focalPointImaginary, VP, &control) }
+	zoomOutButton.SetBoundFunction(dali.ClickEvent, func() { ZoomOut(display, iterations, zoomLevel, VP, &control) })
+	zoomInButton.SetBoundFunction(dali.ClickEvent, func() { ZoomIn(display, iterations, zoomLevel, VP, &control) })
+	panLeftButton.SetBoundFunction(dali.ClickEvent, func() { PanLeft(display, iterations, focalPointReal, VP, &control) })
+	panRightButton.SetBoundFunction(dali.ClickEvent, func() { PanRight(display, iterations, focalPointReal, VP, &control) })
+	panDownButton.SetBoundFunction(dali.ClickEvent, func() { PanDown(display, iterations, focalPointImaginary, VP, &control) })
+	panUpButton.SetBoundFunction(dali.ClickEvent, func() { PanUp(display, iterations, focalPointImaginary, VP, &control) })
 	iterations.Text = "1000"
 	iterations.SetStyle("width:10em;")
-	iterations.Binding.FunctionName = "updateIterations"
-	iterations.InputEventType = dali.OnBlur
 	iterationsDiv.Elements.AddElement(&dali.Span{Text: "Iterations: "})
 	iterationsDiv.Elements.AddElement(iterations)
 	iterationsDiv.Elements.AddElement(startButton)
@@ -364,7 +357,7 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	favs.BoundFunction = func() {
+	favs.SetBoundFunction(dali.ChangeEvent, func() {
 		fv := favs.FavoriteSpots[favs.Value()]
 		focalPointReal.Set(fmt.Sprintf("%.14f", fv.FocalPointReal))
 		focalPointImaginary.Set(fmt.Sprintf("%.14f", fv.FocalPointImaginary))
@@ -373,13 +366,13 @@ func main() {
 		VP.ImaginaryPlaneFocalPoint = complex(fv.FocalPointReal, fv.FocalPointImaginary)
 		VP.ZoomLevel = fv.ZoomLevel
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
-	}
+	})
 	saveButton := dali.NewButton("Add This View to Favorites", "saveButton", "saveFavorite")
-	saveButton.Binding.BoundFunction = func() {
+	saveButton.SetBoundFunction(dali.ClickEvent, func() {
 		Window.GetUI().Eval(`name_favorite_spot();`)
 		favName := fmt.Sprintf("%s", Window.GetUI().Eval(`document.getElementById("viewName").value`))
 		favs.AddFavoriteSpot(favName, focalPointReal, focalPointImaginary, zoomLevel, iterations)
-	}
+	})
 	viewName := dali.NewInputElement("viewName", dali.HiddenInput)
 
 	favDiv.Elements.AddElement(dali.LineBreak())
@@ -396,23 +389,24 @@ func main() {
 	Body.Elements.AddElement(div)
 	Window.Elements.AddElement(Body)
 
-	palette.Binding.BoundFunction = func() {
+	palette.SetBoundFunction(dali.ChangeEvent, func() {
 		v := palette.Value()
 		VP.Pallette = PickPallette(v)
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
-	}
-	zoomLevel.Binding.BoundFunction = func() {
+	})
+
+	zoomLevel.SetBoundFunction(dali.ChangeEvent, func() {
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
-	}
-	focalPointReal.Binding.BoundFunction = func() {
+	})
+	focalPointReal.SetBoundFunction(dali.ChangeEvent, func() {
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
-	}
-	focalPointImaginary.Binding.BoundFunction = func() {
+	})
+	focalPointImaginary.SetBoundFunction(dali.ChangeEvent, func() {
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
-	}
-	iterations.Binding.BoundFunction = func() {
+	})
+	iterations.SetBoundFunction(dali.ChangeEvent, func() {
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
-	}
+	})
 
 	Window.Start()
 	Window.GetUI().Bind("draw_mandelbrot_set",

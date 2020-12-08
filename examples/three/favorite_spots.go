@@ -70,6 +70,7 @@ func NewFavorites() (*Favorites, error) {
 		FavoriteSpots: map[string]FavoriteSpot{},
 	}
 
+
 	f, err := os.Open("favorites.json")
 	if err != nil {
 		fmt.Println(err)

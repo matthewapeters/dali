@@ -115,6 +115,23 @@ func (rows Rows) String() string {
 	return s
 }
 
+//THead is the table Header
+type THead struct {
+	HeadingRow *HeadingRow
+	Base
+}
+
+func (th *THead) String() string {
+	style := ""
+	if th.Style != "" {
+		style = fmt.Sprintf(` style="%s"`, th.Style)
+	}
+	return fmt.Sprintf(`
+<thead%s>
+%s
+</thead>`, style, th.HeadingRow)
+}
+
 //TBody is the table body
 type TBody struct {
 	Rows
@@ -136,7 +153,7 @@ func (tb *TBody) String() string {
 type Table struct {
 	ColumnCount int
 	RowCount    int
-	HeadingRow  *HeadingRow
+	THead       *THead
 	TBody       *TBody
 	Base
 	Elements *Elements
@@ -149,7 +166,7 @@ func (tab *Table) String() string {
 	}
 	return fmt.Sprintf(`<table id="%s"%s>
 %s
-%s</table>`, tab.Name(), style, tab.HeadingRow, tab.TBody)
+%s</table>`, tab.Name(), style, tab.THead, tab.TBody)
 }
 
 // NewTableElement creates a new Table element
@@ -163,9 +180,9 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 		Base: Base{
 			ID: name,
 		},
-		HeadingRow: &headingRow,
-		TBody:      &TBody{Rows: tableRows},
-		Elements:   &Elements{},
+		THead:    &THead{HeadingRow: &headingRow},
+		TBody:    &TBody{Rows: tableRows},
+		Elements: &Elements{},
 	}
 
 	for i, h := range headings {
