@@ -19,9 +19,12 @@ func TestStyleSheet(t *testing.T) {
 
 func TestButton(t *testing.T) {
 	b := NewButton("This Is A Button", "MyTestButton", "do_MyTestButton")
-	expected := `<button id="MyTestButton" onclick="do_MyTestButton()" >This Is A Button</button>`
+	expected := `<button id="MyTestButton" onclick="do_MyTestButton()">This Is A Button</button>`
 	if fmt.Sprintf("%s", b) != expected {
-		t.Errorf(`expected "%s" but got "%s"`, expected, b)
+		t.Errorf(`expected 
+"%s" 
+but got 
+"%s"`, expected, b)
 	}
 	(*b.BoundEvents)[ClickEvent].BoundFunction = func() { fmt.Println("Yaba Daba Do!") }
 	d := NewDiv("")
@@ -42,7 +45,7 @@ func TestWindow(t *testing.T) {
 	if len(p.Elements.slice) != 1 {
 		t.Errorf("Expect there to be 1 element, got %d", len(p.Elements.slice))
 	}
-	expected := `<div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div>`
+	expected := `<div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()">This is Button One</button></div>`
 	if fmt.Sprintf("%s", p) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, p)
 	}
@@ -51,25 +54,25 @@ func TestWindow(t *testing.T) {
 	body := NewBodyElement("")
 	body.Elements.AddElement(p)
 
-	expected = `<body><div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body>`
+	expected = `<body><div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()">This is Button One</button></div></body>`
 	if fmt.Sprintf("%s", body) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, body)
 	}
 
 	w.Elements.AddElement(body)
-	expected = `<html><body><div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body></html>`
+	expected = `<html><body><div id="TestDiv"><button id="buttonOne" onclick="do_buttonOne()">This is Button One</button></div></body></html>`
 
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf("Expected %s but got %s", expected, w)
 	}
 	p.SetStyle("border:solid 1px #000000")
-	expected = `<html><body><div id="TestDiv" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div></body></html>`
+	expected = `<html><body><div id="TestDiv" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()">This is Button One</button></div></body></html>`
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf("Expected %s but got %s", expected, w)
 	}
 	p2 := NewDiv("TestDivTwo")
 	body.Elements.AddElement(p2)
-	expected = `<html><body><div id="TestDiv" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()" >This is Button One</button></div><div id="TestDivTwo"></div></body></html>`
+	expected = `<html><body><div id="TestDiv" style="border:solid 1px #000000"><button id="buttonOne" onclick="do_buttonOne()">This is Button One</button></div><div id="TestDivTwo"></div></body></html>`
 	if fmt.Sprintf("%s", w) != expected {
 		t.Errorf(`Expected "%s" but got "%s"`, expected, w)
 	}

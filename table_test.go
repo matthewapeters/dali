@@ -2,15 +2,18 @@ package dali
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
 
 func TestTable(t *testing.T) {
 	tab := NewTableElement("testTable", 1, 1, []string{})
 	expected := `<table id="testTable">
+<tbody>
 	<tr>
 		<td></td>
 	</tr>
+</tbody>
 </table>`
 	html := fmt.Sprintf("%s", tab)
 	if html != expected {
@@ -18,10 +21,14 @@ func TestTable(t *testing.T) {
 %s  
 but got: 
 %s`, expected, html)
+		for i := 0; float64(i) < math.Min(float64(len(expected)), float64(len(html))); i++ {
+			fmt.Printf("'%s'%d\t'%s'%d\n", string(expected[i]), expected[i], string(html[i]), html[i])
+		}
 	}
 
-	tab = NewTableElement("testTable", 5, 2, []string{})
+	tab = NewTableElement("testTable", 2, 5, []string{})
 	expected = `<table id="testTable">
+<tbody>
 	<tr>
 		<td></td>
 		<td></td>
@@ -42,6 +49,7 @@ but got:
 		<td></td>
 		<td></td>
 	</tr>
+</tbody>
 </table>`
 	html = fmt.Sprintf("%s", tab)
 	if html != expected {

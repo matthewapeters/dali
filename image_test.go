@@ -25,8 +25,11 @@ func TestImage(t *testing.T) {
 		fmt.Println(i.AreaMap.Areas)
 	}
 
-	expected = `<image id="TestImageName" width="100" height="200" src="PathToImage" style="border:solid 1px #123456"usemap="#TestImageName_map"><map name="TestImageName_map"><area shape="default" coords="0,0,100,200" onclick="doAltText()" alt="altText"></map>`
+	expected = `<image id="TestImageName" width="100" height="200" src="PathToImage" style="border:solid 1px #123456" usemap="#TestImageName_map"><map name="TestImageName_map"><area shape="default" coords="0,0,100,200" onclick="doAltText()" alt="altText"></map>`
 	if fmt.Sprintf("%s", i) != expected {
-		t.Errorf(`expected "%s" but got "%s"`, expected, i)
+		t.Errorf(`expected 
+"%s" 
+but got
+"%s"`, expected, i)
 	}
 }

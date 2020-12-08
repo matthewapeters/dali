@@ -62,12 +62,9 @@ type Cells []*Cell
 func (cells Cells) String() string {
 	s := ""
 	for _, cell := range cells {
-		s += fmt.Sprintf(`
-		%s`, cell)
+		s += fmt.Sprintf(`%c%c%c%s`, 10, 9, 9, cell)
 	}
-	s += `
-`
-
+	s += fmt.Sprintf(`%c`, 10)
 	return s
 }
 
@@ -85,9 +82,7 @@ func (hr *HeadingRow) String() string {
 	if hr.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, hr.Style)
 	}
-	return fmt.Sprintf(`
-	<tr%s>%s</tr>
-`, style, hr.Headings)
+	return fmt.Sprintf(`%c%c<tr%s>%s%c</tr>`, 10, 9, style, hr.Headings, 9)
 }
 
 //Row is a row
@@ -101,8 +96,7 @@ func (row *Row) String() string {
 	if row.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, row.Style)
 	}
-	return fmt.Sprintf(`
-	<tr%s>%s	</tr>`, style, row.Cells)
+	return fmt.Sprintf(`%c%c<tr%s>%s%c</tr>`, 10, 9, style, row.Cells, 9)
 }
 
 //Rows is a slice of Row elements
@@ -111,8 +105,7 @@ type Rows []*Row
 func (rows Rows) String() string {
 	s := ""
 	for _, row := range rows {
-		s += fmt.Sprintf(`	%s
-`, row)
+		s += fmt.Sprintf(`%s`, row)
 	}
 	return s
 }
@@ -131,10 +124,7 @@ func (th *THead) String() string {
 	if th.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, th.Style)
 	}
-	return fmt.Sprintf(`
-<thead%s>
-%s
-</thead>`, style, th.HeadingRow)
+	return fmt.Sprintf(`%c<thead%s>%s%c</thead>`, 10, style, th.HeadingRow, 10)
 }
 
 //TBody is the table body
@@ -148,9 +138,7 @@ func (tb *TBody) String() string {
 	if tb.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, tb.Style)
 	}
-	return fmt.Sprintf(`
-<tbody%s>%s</tbody>
-`, style, tb.Rows)
+	return fmt.Sprintf(`%c<tbody%s>%s%c</tbody>`, 10, style, tb.Rows, 10)
 }
 
 // Table is a table
@@ -168,7 +156,7 @@ func (tab *Table) String() string {
 	if tab.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, tab.Style)
 	}
-	return fmt.Sprintf(`<table id="%s"%s>%s%s</table>`, tab.Name(), style, tab.THead, tab.TBody)
+	return fmt.Sprintf(`<table id="%s"%s>%s%s%c</table>`, tab.Name(), style, tab.THead, tab.TBody, 10)
 }
 
 // NewTableElement creates a new Table element
