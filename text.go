@@ -15,7 +15,7 @@ func Text(t string) *TextElement {
 func (t *TextElement) Children() *Elements { return &Elements{slice: []*Element{}} }
 
 // Bindings returns nil
-func (t *TextElement) Bindings() *Binding { return nil }
+func (t *TextElement) Bindings() *map[EventType]*Binding { return nil }
 
 //String stringer for TextElement
 func (t *TextElement) String() string { return t.text }

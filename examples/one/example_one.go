@@ -59,7 +59,7 @@ func main() {
 	/*Demonstate Promise bindings by having a button trigger a random number selection*/
 	nbr := dali.Span{Base: dali.Base{ID: "randomNumber", Style: "width: 100%;padding:5;"}, Text: "Click button to pick a random number..."}
 	picker := dali.NewButton("Pick A Number:", "picker", "do_pick_a_number_server_side")
-	picker.Binding.BoundFunction = func() { PickARandomNumber(Window) }
+	(*picker.Base.BoundEvents)[dali.ClickEvent].BoundFunction = func() { PickARandomNumber(Window) }
 	pickerDiv := dali.NewDiv("pickerDiv")
 	pickerDiv.Elements.AddElement(picker)
 	pickerDiv.Elements.AddElement(&nbr)

@@ -199,7 +199,7 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 }
 
 //Bindings returns empty Bindings on table
-func (tab *Table) Bindings() *Binding { return nil }
+func (tab *Table) Bindings() *map[EventType]*Binding { return nil }
 
 //Children will return each of the table  Cells
 func (tab *Table) Children() *Elements {

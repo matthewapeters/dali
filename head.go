@@ -10,7 +10,7 @@ type HeadElement struct {
 }
 
 // Bindings returns nil
-func (h *HeadElement) Bindings() *Binding { return nil }
+func (h *HeadElement) Bindings() *map[EventType]*Binding { return nil }
 
 //Children returns the Elements
 func (h *HeadElement) Children() *Elements { return h.Elements }
@@ -43,7 +43,7 @@ type ScriptElement struct {
 }
 
 // Bindings returns nil
-func (scr *ScriptElement) Bindings() *Binding { return nil }
+func (scr *ScriptElement) Bindings() *map[EventType]*Binding { return nil }
 
 func (scr *ScriptElement) String() string {
 	src := ""
@@ -77,7 +77,7 @@ type TitleElement struct {
 }
 
 //Bindings returns nil
-func (t *TitleElement) Bindings() *Binding { return nil }
+func (t *TitleElement) Bindings() *map[EventType]*Binding { return nil }
 
 //Children will return an empty Elements
 func (t *TitleElement) Children() *Elements { return &Elements{slice: []*Element{}} }
@@ -122,15 +122,16 @@ func (b *BodyElement) Bindings() *map[EventType]*Binding { return b.BoundEvents 
 //NewBodyElement creates a body element
 func NewBodyElement(onLoad string) *BodyElement {
 	els := Elements{slice: []*Element{}}
-	var binding *Binding
+	var bindings *map[EventType]*Binding
 	if onLoad != "" {
-		binding = &Binding{FunctionName: onLoad}
+		bindings = &map[EventType]*Binding{LoadEvent: &Binding{FunctionName: "body_on_load"}}
 	}
 
 	return &BodyElement{
 		Elements: &els,
 		Base: Base{
 			ID:          "BODY",
-			BoundEvents: &map[EventType]*Binding{LoadEvent: binding}},
+			BoundEvents: bindings,
+		},
 	}
 }
