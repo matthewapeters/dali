@@ -236,9 +236,8 @@ func main() {
 	display := dali.NewImage("display", 900, 700, "")
 	display.SetStyle(`border:solid 1px #333333;display:block;margin:auto;`)
 	div.Elements.AddElement(display)
-	//div.Elements.AddElement(dali.LineBreak())
 
-	tabl := dali.NewTableElement("menus", 3, 5, []string{"", "Explore the Mandelbrot Set", ""})
+	tabl := dali.NewTableElement("menus", 3, 4, []string{"", "Explore the Mandelbrot Set", ""})
 	tabl.SetStyle("width:100%;padding:0px;")
 	tabl.SetCommonStyles("padding:0px;margin:none;")
 	a, _ := tabl.GetCell(0, 0)
@@ -328,7 +327,7 @@ func main() {
 	iterationsDiv.Elements.AddElement(startButton)
 	iterationsDiv.Elements.AddElement(pauseButton)
 	iterationsDiv.Elements.AddElement(palette)
-	c, _ := tabl.GetCell(1, 2)
+	c, _ := tabl.GetCell(1, 0)
 	c.Elements.AddElement(iterationsDiv)
 
 	panMenu := dali.NewDiv("menu")
@@ -337,7 +336,7 @@ func main() {
 	panMenu.Elements.AddElement(panRightButton)
 	panMenu.Elements.AddElement(panUpButton)
 	panMenu.Elements.AddElement(panDownButton)
-	c, _ = tabl.GetCell(1, 2)
+	c, _ = tabl.GetCell(1, 1)
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(panMenu)
 	c.Elements.AddElement(focalPointDiv)
@@ -347,7 +346,7 @@ func main() {
 	zoomMenu.Elements.AddElement(zoomInButton)
 	zoomMenu.Elements.AddElement(zoomLevel)
 	zoomMenu.Elements.AddElement(zoomOutButton)
-	c, _ = tabl.GetCell(1, 3)
+	c, _ = tabl.GetCell(1, 2)
 	c.Elements.AddElement(zoomMenu)
 
 	favDiv := dali.NewDiv("favDiv")
@@ -381,8 +380,7 @@ func main() {
 	favDiv.Elements.AddElement(saveButton)
 	favDiv.Elements.AddElement(viewName)
 
-	//div.Elements.AddElement(favDiv)
-	c, _ = tabl.GetCell(1, 4)
+	c, _ = tabl.GetCell(1, 3)
 	c.Elements.AddElement(favDiv)
 
 	div.Elements.AddElement(tabl)

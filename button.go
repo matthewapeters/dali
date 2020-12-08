@@ -20,7 +20,7 @@ func (b *Button) String() string {
 			bindings += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
 		}
 	}
-	return fmt.Sprintf(`<button id="%s" %s%s>%s</button>`, b.Name(), bindings, style, b.ButtonText)
+	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.Name(), bindings, style, b.ButtonText)
 }
 
 // Children will return an empty Elements

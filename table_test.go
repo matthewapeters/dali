@@ -63,14 +63,16 @@ but got:
 	tab.AddCellElement(1, 1, &b2)
 
 	expected = `<table id="cellTest">
+<tbody>
 	<tr>
-		<td><button id="button1" onclick="doButton1()" >0,0</button></td>
+		<td><button id="button1" onclick="doButton1()">0,0</button></td>
 		<td></td>
 	</tr>
 	<tr>
 		<td></td>
-		<td><button id="button2" onclick="doButton2()" >1,1</button></td>
+		<td><button id="button2" onclick="doButton2()">1,1</button></td>
 	</tr>
+</tbody>
 </table>`
 	html = fmt.Sprintf("%s", tab)
 	if html != expected {
@@ -84,7 +86,7 @@ but got:
 	if err != nil {
 		t.Error(err)
 	}
-	expected = `<td><button id="button2" onclick="doButton2()" >1,1</button></td>`
+	expected = `<td><button id="button2" onclick="doButton2()">1,1</button></td>`
 	html = fmt.Sprintf("%s", c)
 	if html != expected {
 		t.Errorf(`Expected:

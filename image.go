@@ -108,12 +108,12 @@ func (i *Image) String() string {
 		style = fmt.Sprintf(` style="%s"`, i.Style)
 	}
 	areamap := ""
-	if i.Clickable() {
-		areamap = fmt.Sprintf(`usemap="#%s_map"`, i.Name())
+	if len(i.AreaMap.Areas) > 0 {
+		areamap = fmt.Sprintf(` usemap="#%s_map"`, i.Name())
 	}
 	img := fmt.Sprintf(`<image id="%s" width="%d" height="%d" src="%s"%s%s%s>`, i.ID, i.Width, i.Height, i.URL, alt, style, areamap)
 	if len(i.AreaMap.Areas) > 0 {
-		img = fmt.Sprintf(`%s%s`, img, i.AreaMap)
+		img += fmt.Sprintf("%s", i.AreaMap)
 	}
 	return img
 }
