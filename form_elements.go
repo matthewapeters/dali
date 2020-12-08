@@ -134,8 +134,12 @@ type SelectElement struct {
 func NewSelectElement(name, functionName string) *SelectElement {
 	os := OptionSlice([]*OptionElement{})
 	return &SelectElement{
-		Base:    Base{ID: name},
-		Binding: Binding{FunctionName: functionName},
+		Base: Base{
+			ID: name,
+			BoundEvents: &map[EventType]*Binding{
+				ChangeEvent: &Binding{FunctionName: fmt.Sprintf(`%s_select`, name)},
+			},
+		},
 		Options: &os,
 	}
 }

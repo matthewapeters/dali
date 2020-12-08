@@ -84,6 +84,20 @@ func (b *Base) Styles() string { return b.Style }
 //SetStyle will set the style
 func (b *Base) SetStyle(s string) { b.Style = s }
 
+//SetBoundFunction provides a clean way to set the bound function on an event
+func (b *Base) SetBoundFunction(event EventType, f func()) {
+	bnd := (*b.BoundEvents)[event]
+	if bnd == nil {
+		bnd := &Binding{
+			BoundFunction: f,
+			FunctionName:  fmt.Sprintf("%s_on_%s", b.Name(), event),
+		}
+		(*b.BoundEvents)[event] = bnd
+	} else {
+		bnd.BoundFunction = f
+	}
+}
+
 //Elements is a slice of Elements
 type Elements struct {
 	slice []*Element
