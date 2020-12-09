@@ -109,7 +109,7 @@ func (els *Elements) String() string {
 		return ""
 	}
 	html := ""
-	for i, el := range els.slice {
+	for _, el := range els.slice {
 		//fmt.Printf(`%d%b%v%c%s%b`, i, 9, el, 9, *el, 10)
 		html += fmt.Sprintf(`%s`, *el)
 	}
