@@ -35,6 +35,14 @@ func (hd *Heading) String() string {
 //Headings is the collection of headings
 type Headings []*Heading
 
+func (hs Headings) String() string {
+	html := ""
+	for _, h := range hs {
+		html += fmt.Sprintf("%s", h)
+	}
+	return html
+}
+
 //Cell is a cell
 type Cell struct {
 	Span int
