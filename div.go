@@ -9,7 +9,7 @@ type Div struct {
 }
 
 // Bindings returns the binding
-func (p *Div) Bindings() *map[EventType]*Binding { return p.BoundEvents }
+func (p *Div) Bindings() BoundEvents { return p.BoundEvents }
 
 //Children returns the Elements
 func (p *Div) Children() *Elements { return p.Elements }

@@ -16,7 +16,7 @@ type Heading struct {
 func (hd *Heading) Children() *Elements { return &Elements{} }
 
 //Bindings returns the bindings for Headings
-func (hd *Heading) Bindings() *map[EventType]*Binding { return hd.BoundEvents }
+func (hd *Heading) Bindings() BoundEvents { return hd.BoundEvents }
 
 func (hd *Heading) String() string {
 	style := ""
@@ -59,7 +59,7 @@ func (cell *Cell) String() string {
 }
 
 //Bindings returns nil for Cell
-func (cell *Cell) Bindings() *map[EventType]*Binding { return nil }
+func (cell *Cell) Bindings() BoundEvents { return nil }
 
 // Children returns the Cell's child elements
 func (cell *Cell) Children() *Elements { return cell.Elements }
@@ -214,7 +214,7 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 }
 
 //Bindings returns empty Bindings on table
-func (tab *Table) Bindings() *map[EventType]*Binding { return nil }
+func (tab *Table) Bindings() BoundEvents { return nil }
 
 //Children will return each of the table  Cells
 func (tab *Table) Children() *Elements {

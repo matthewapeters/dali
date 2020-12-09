@@ -18,7 +18,7 @@ func (s *Span) String() string {
 }
 
 //Bindings returns nil
-func (s *Span) Bindings() *map[EventType]*Binding { return nil }
+func (s *Span) Bindings() BoundEvents { return nil }
 
 //Children returns an empty Elements
 func (s *Span) Children() *Elements { return &Elements{slice: []*Element{}} }

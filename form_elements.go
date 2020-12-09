@@ -100,7 +100,7 @@ func NewInputElement(name string, inputType InputType) *InputElement {
 func (tf *InputElement) Children() *Elements { return &Elements{slice: []*Element{}} }
 
 // Bindings returns the element Bindings
-func (tf *InputElement) Bindings() *map[EventType]*Binding { return tf.BoundEvents }
+func (tf *InputElement) Bindings() BoundEvents { return tf.BoundEvents }
 
 //OptionElement for use in SelectElement
 type OptionElement struct {
@@ -164,4 +164,4 @@ func (se *SelectElement) String() string {
 func (se *SelectElement) Children() *Elements { return &Elements{slice: []*Element{}} }
 
 // Bindings returns the Binding
-func (se *SelectElement) Bindings() *map[EventType]*Binding { return se.BoundEvents }
+func (se *SelectElement) Bindings() BoundEvents { return se.BoundEvents }

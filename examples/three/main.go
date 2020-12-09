@@ -242,7 +242,6 @@ func main() {
 	tabl.SetCommonStyles("padding:0px;margin:none;")
 	a, _ := tabl.GetCell(0, 0)
 	a.SetStyle("width:33%;")
-	a.Elements.AddElement(dali.LineBreak())
 
 	startButton := dali.NewButton("Start Iterations", "start", "start_iterations")
 	startButton.SetBoundFunction(dali.ClickEvent, func() {
@@ -309,6 +308,7 @@ func main() {
 	focalPointImaginary.SetStyle("width:15em;")
 	focalPointDiv.Elements.AddElement(&dali.Span{Text: "Focal Point: Real: "})
 	focalPointDiv.Elements.AddElement(focalPointReal)
+	focalPointDiv.Elements.AddElement(dali.LineBreak())
 	focalPointDiv.Elements.AddElement(&dali.Span{Text: " Imaginary: "})
 	focalPointDiv.Elements.AddElement(focalPointImaginary)
 
@@ -326,12 +326,13 @@ func main() {
 	iterationsDiv.Elements.AddElement(iterations)
 	iterationsDiv.Elements.AddElement(startButton)
 	iterationsDiv.Elements.AddElement(pauseButton)
-	iterationsDiv.Elements.AddElement(palette)
-	c, _ := tabl.GetCell(1, 0)
+
+	c, _ := tabl.GetCell(0, 0)
 	c.Elements.AddElement(iterationsDiv)
+	c, _ = tabl.GetCell(1, 0)
+	c.Elements.AddElement(palette)
 
 	panMenu := dali.NewDiv("menu")
-
 	panMenu.Elements.AddElement(panLeftButton)
 	panMenu.Elements.AddElement(panRightButton)
 	panMenu.Elements.AddElement(panUpButton)
@@ -339,6 +340,7 @@ func main() {
 	c, _ = tabl.GetCell(1, 1)
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(panMenu)
+	c, _ = tabl.GetCell(2, 0)
 	c.Elements.AddElement(focalPointDiv)
 
 	zoomMenu := dali.NewDiv("zoomMenu")

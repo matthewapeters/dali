@@ -7,6 +7,9 @@ import (
 	"github.com/zserge/lorca"
 )
 
+//BoundEvents is a mapping of events and the bound functions that trigger
+type BoundEvents *map[EventType]*Binding
+
 //Element is an interface for describing an HTML element
 type Element interface {
 	String() string
@@ -16,7 +19,7 @@ type Element interface {
 	Styles() string
 	SetStyle(string)
 	Children() *Elements
-	Bindings() *map[EventType]*Binding
+	Bindings() BoundEvents
 	Value() string
 	SetUI(*lorca.UI)
 	GetUI() *lorca.UI
@@ -27,7 +30,7 @@ type Base struct {
 	ID          string
 	Style       string
 	UI          *lorca.UI
-	BoundEvents *map[EventType]*Binding
+	BoundEvents BoundEvents
 	Element
 }
 
@@ -38,7 +41,7 @@ func (b *Base) BindFunction(e EventType, functionName string, boundFunction func
 }
 
 //Bindings returns the map of events to bound functions
-func (b *Base) Bindings() *map[EventType]*Binding { return b.BoundEvents }
+func (b *Base) Bindings() BoundEvents { return b.BoundEvents }
 
 //SetText replaces the inner text of the element after the Window has been started
 func (b *Base) SetText(s string) error {
