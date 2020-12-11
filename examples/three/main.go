@@ -49,13 +49,14 @@ func drawChunk(start, chunk, height, iterations int, view *ViewPort, wg *sync.Wa
 }
 
 // DrawMandelbrot will Draw Mandelbrot images
-func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image) {
+func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progress *dali.ProgressElement) {
 
 	chunkWG := sync.WaitGroup{}
 	width := view.Image.LowerRight.X - view.Image.UpperLeft.X
 	height := view.Image.LowerRight.Y - view.Image.UpperLeft.Y
 	chout := make(chan *Iterant, width*height)
 	defer close(chout)
+	pc := progress.Channel()
 
 	image := image.NewRGBA(image.Rect(0, 0, width, height))
 	NoCPUs := runtime.NumCPU()
@@ -71,27 +72,34 @@ func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image) {
 		i := <-chout
 		if i != nil {
 			image.Set(i.Pixel.X, i.Pixel.Y, view.Pallette(i))
+			if math.Mod(float64(pixelCount), 1000.0) == 0 {
+				pc <- float64(pixelCount)
+			}
 		}
 	}
+	close(*progress.ProgressChannel)
 	chunkWG.Wait()
+	progress.Reset()
 	display.Load(image)
 }
 
 //FindMandelbrotSet iterates over C to determine members of the Mandelbrot set
-func FindMandelbrotSet(w *dali.Window, image *dali.Image, control *sync.Mutex, vp *ViewPort) {
+func FindMandelbrotSet(w *dali.Window, image *dali.Image, control *sync.Mutex, vp *ViewPort, progress *dali.ProgressElement) {
 	for i := 0; i < 5000; i += 25 {
 		control.Lock()
 		w.GetUI().Eval(fmt.Sprintf(`document.getElementById("iterations").value="%d";`, i))
 		DrawMandelbrot(
 			vp,
 			i,
-			image)
+			image,
+			progress)
 		control.Unlock()
 	}
 }
 
 // ZoomIn will reduce the range of the C Plan within the viewport
-func ZoomIn(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *ViewPort, control *sync.Mutex) {
+func ZoomIn(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *ViewPort,
+	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
 
@@ -103,11 +111,13 @@ func ZoomIn(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *Vie
 	DrawMandelbrot(
 		vp,
 		i,
-		image)
+		image,
+		progress)
 }
 
 // ZoomOut will increase the range of the C Plan within the viewport
-func ZoomOut(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *ViewPort, control *sync.Mutex) {
+func ZoomOut(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *ViewPort,
+	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
 
@@ -118,11 +128,13 @@ func ZoomOut(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *Vi
 	DrawMandelbrot(
 		vp,
 		i,
-		image)
+		image,
+		progress)
 }
 
 // PanLeft will shift the Complex Plane to the right within the viewport
-func PanLeft(image *dali.Image, iterations, focalPointReal *dali.InputElement, vp *ViewPort, control *sync.Mutex) {
+func PanLeft(image *dali.Image, iterations, focalPointReal *dali.InputElement, vp *ViewPort,
+	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
 	length := 4 * vp.ZoomLevel
@@ -133,13 +145,15 @@ func PanLeft(image *dali.Image, iterations, focalPointReal *dali.InputElement, v
 	DrawMandelbrot(
 		vp,
 		i,
-		image)
+		image,
+		progress)
 
 	focalPointReal.Set(fmt.Sprintf("%.14f", real(vp.ImaginaryPlaneFocalPoint)))
 }
 
 // PanRight will shift the Complex Plane to the left within the viewport
-func PanRight(image *dali.Image, iterations, focalPointReal *dali.InputElement, vp *ViewPort, control *sync.Mutex) {
+func PanRight(image *dali.Image, iterations, focalPointReal *dali.InputElement, vp *ViewPort,
+	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
 	length := 4 * vp.ZoomLevel
@@ -150,13 +164,15 @@ func PanRight(image *dali.Image, iterations, focalPointReal *dali.InputElement, 
 	DrawMandelbrot(
 		vp,
 		i,
-		image)
+		image,
+		progress)
 
 	focalPointReal.Set(fmt.Sprintf("%.14f", real(vp.ImaginaryPlaneFocalPoint)))
 }
 
 // PanUp will shift the Complex Plane down within the viewport
-func PanUp(image *dali.Image, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort, control *sync.Mutex) {
+func PanUp(image *dali.Image, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort,
+	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	length := 4.0 * vp.ZoomLevel
 	vp.ImaginaryPlaneFocalPoint += complex(0, 0.1*length)
@@ -165,14 +181,16 @@ func PanUp(image *dali.Image, iterations, focalPointImaginary *dali.InputElement
 	DrawMandelbrot(
 		vp,
 		i,
-		image)
+		image,
+		progress)
 
 	focalPointImaginary.Set(fmt.Sprintf("%.14f", imag(vp.ImaginaryPlaneFocalPoint)))
 	control.Unlock()
 }
 
 // PanDown will shift the Complex Plane up within the viewport
-func PanDown(image *dali.Image, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort, control *sync.Mutex) {
+func PanDown(image *dali.Image, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort,
+	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	length := 4.0 * vp.ZoomLevel
 	vp.ImaginaryPlaneFocalPoint -= complex(0, 0.1*length)
@@ -181,14 +199,16 @@ func PanDown(image *dali.Image, iterations, focalPointImaginary *dali.InputEleme
 	DrawMandelbrot(
 		vp,
 		i,
-		image)
+		image,
+		progress)
 
 	focalPointImaginary.Set(fmt.Sprintf("%.14f", imag(vp.ImaginaryPlaneFocalPoint)))
 	control.Unlock()
 }
 
 //UpdateDisplay will redraw the Mandelbrot set based on Window values
-func UpdateDisplay(VP *ViewPort, display *dali.Image, control *sync.Mutex, iterations, zoomLevel, focalPointReal, focalPointImaginary *dali.InputElement) {
+func UpdateDisplay(VP *ViewPort, display *dali.Image, control *sync.Mutex, iterations,
+	zoomLevel, focalPointReal, focalPointImaginary *dali.InputElement, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
 	i, _ := strconv.Atoi(iterations.Value())
@@ -197,7 +217,8 @@ func UpdateDisplay(VP *ViewPort, display *dali.Image, control *sync.Mutex, itera
 	fpImag, _ := strconv.ParseFloat(focalPointImaginary.Value(), 64)
 	VP.ImaginaryPlaneFocalPoint = complex(fpReal, fpImag)
 	VP.ZoomLevel = zoom
-	DrawMandelbrot(VP, i, display)
+
+	DrawMandelbrot(VP, i, display, progress)
 }
 
 func main() {
@@ -212,6 +233,7 @@ func main() {
 		ZoomLevel:                1.0,
 		Pallette:                 SeussyPallette,
 	}
+	progress := dali.NewProgressElement("redrawProgressBarr", 900*700)
 
 	Window := dali.NewWindow(1280, 920, "", "")
 	Head := dali.NewHeadElement()
@@ -246,7 +268,7 @@ func main() {
 	startButton := dali.NewButton("Start Iterations", "start", "start_iterations")
 	startButton.SetBoundFunction(dali.ClickEvent, func() {
 		startButton.Disable()
-		FindMandelbrotSet(Window, display, &control, VP)
+		FindMandelbrotSet(Window, display, &control, VP, progress)
 		startButton.Enable()
 		Window.GetUI().Eval(`document.getElementById("start").disabled=false;`)
 	})
@@ -328,12 +350,12 @@ func main() {
 
 	iterationsDiv := dali.NewDiv("iterationMenu")
 	iterations := dali.NewInputElement("iterations", dali.NumberInput)
-	zoomOutButton.SetBoundFunction(dali.ClickEvent, func() { ZoomOut(display, iterations, zoomLevel, VP, &control) })
-	zoomInButton.SetBoundFunction(dali.ClickEvent, func() { ZoomIn(display, iterations, zoomLevel, VP, &control) })
-	panLeftButton.SetBoundFunction(dali.ClickEvent, func() { PanLeft(display, iterations, focalPointReal, VP, &control) })
-	panRightButton.SetBoundFunction(dali.ClickEvent, func() { PanRight(display, iterations, focalPointReal, VP, &control) })
-	panDownButton.SetBoundFunction(dali.ClickEvent, func() { PanDown(display, iterations, focalPointImaginary, VP, &control) })
-	panUpButton.SetBoundFunction(dali.ClickEvent, func() { PanUp(display, iterations, focalPointImaginary, VP, &control) })
+	zoomOutButton.SetBoundFunction(dali.ClickEvent, func() { ZoomOut(display, iterations, zoomLevel, VP, &control, progress) })
+	zoomInButton.SetBoundFunction(dali.ClickEvent, func() { ZoomIn(display, iterations, zoomLevel, VP, &control, progress) })
+	panLeftButton.SetBoundFunction(dali.ClickEvent, func() { PanLeft(display, iterations, focalPointReal, VP, &control, progress) })
+	panRightButton.SetBoundFunction(dali.ClickEvent, func() { PanRight(display, iterations, focalPointReal, VP, &control, progress) })
+	panDownButton.SetBoundFunction(dali.ClickEvent, func() { PanDown(display, iterations, focalPointImaginary, VP, &control, progress) })
+	panUpButton.SetBoundFunction(dali.ClickEvent, func() { PanUp(display, iterations, focalPointImaginary, VP, &control, progress) })
 	iterations.Text = "1000"
 	iterations.SetStyle("width:10em;")
 	iterationsDiv.Elements.AddElement(&dali.Span{Text: "Iterations: "})
@@ -378,7 +400,7 @@ func main() {
 		iterations.Set(fmt.Sprintf("%d", fv.Iterations))
 		VP.ImaginaryPlaneFocalPoint = complex(fv.FocalPointReal, fv.FocalPointImaginary)
 		VP.ZoomLevel = fv.ZoomLevel
-		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 	saveButton := dali.NewButton("Save View", "saveButton", "saveFavorite")
 	saveButton.SetBoundFunction(dali.ClickEvent, func() {
@@ -396,6 +418,11 @@ func main() {
 	c.Elements.AddElement(saveButton)
 	c.Elements.AddElement(viewName)
 
+	c, _ = tabl.GetCell(2, 1)
+	c.Elements.AddElement(&dali.Span{Text: "Render Progress:"})
+	c.Elements.AddElement(dali.LineBreak())
+	c.Elements.AddElement(progress)
+
 	div.Elements.AddElement(tabl)
 	Body.Elements.AddElement(div)
 	Window.Elements.AddElement(Body)
@@ -403,26 +430,26 @@ func main() {
 	palette.SetBoundFunction(dali.ChangeEvent, func() {
 		v := palette.Value()
 		VP.Pallette = PickPallette(v)
-		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 
 	zoomLevel.SetBoundFunction(dali.ChangeEvent, func() {
-		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 	focalPointReal.SetBoundFunction(dali.ChangeEvent, func() {
-		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 	focalPointImaginary.SetBoundFunction(dali.ChangeEvent, func() {
-		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 	iterations.SetBoundFunction(dali.ChangeEvent, func() {
-		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 
 	Window.Start()
 	Window.GetUI().Bind("draw_mandelbrot_set",
 		func() {
-			UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary)
+			UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 		})
 	<-Window.GetUI().Done()
 }
