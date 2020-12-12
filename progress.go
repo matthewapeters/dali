@@ -2,6 +2,7 @@ package dali
 
 import (
 	"fmt"
+	"math"
 	"sync"
 )
 
@@ -17,9 +18,14 @@ type ProgressElement struct {
 //NewProgressElement creates a new progress bar
 func NewProgressElement(name string, max float64) *ProgressElement {
 
+	c := make(chan float64, int(max))
+
 	return &ProgressElement{
-		Base: Base{ID: name},
-		Max:  max,
+		Base:            Base{ID: name},
+		Max:             max,
+		CurrentValue:    0,
+		Mu:              sync.Mutex{},
+		ProgressChannel: &c,
 	}
 }
 
@@ -34,13 +40,15 @@ func (p *ProgressElement) Value() string {
 }
 
 func (p *ProgressElement) String() string {
+	go p.monitorProgressChannel()
 	style := ""
 	if p.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, p.Style)
 	}
-	return fmt.Sprintf(`<progress id="%s" max="%f"%s></progress>`, p.Name(), p.Max, style)
+	return fmt.Sprintf(`<progress id="%s" value="%f" max="%f"%s></progress>`, p.Name(), p.CurrentValue, p.Max, style)
 }
 
+// monitors a progress channel.  If the channel is closed, returns.
 func (p *ProgressElement) monitorProgressChannel() {
 	for {
 		v, ok := <-*p.ProgressChannel
@@ -48,40 +56,22 @@ func (p *ProgressElement) monitorProgressChannel() {
 			return
 		}
 		p.Mu.Lock()
-		if v >= p.CurrentValue {
-			p.CurrentValue = v
-			(*p.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value=%f`, p.Name(), p.CurrentValue))
-		}
+		p.CurrentValue = v
+		p.Set(fmt.Sprintf("%f", p.CurrentValue))
 		p.Mu.Unlock()
 	}
 }
 
-//Reset will return the progress bar to 0
-func (p *ProgressElement) Reset() {
-	p.Mu.Lock()
-	defer p.Mu.Unlock()
-	p.CurrentValue = 0
-	(*p.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value=0`, p.Name()))
-	for {
-		_, notDone := <-*p.ProgressChannel
-		if !notDone {
-			return
-		}
-	}
-}
-
-//Channel provides the progress channel as a send-only unidirectional interface
-func (p *ProgressElement) Channel() chan<- float64 {
-	p.Mu.Lock()
-	defer p.Mu.Unlock()
-	if p.ProgressChannel != nil {
-		p.Mu.Unlock()
-		p.Reset()
+// Status receives the status value to report in the progress bar
+func (p *ProgressElement) Status(f float64) {
+	if math.Mod(f, p.Max/100.0) <= 0.5 {
 		p.Mu.Lock()
-	}
-	pc := make(chan float64, int(p.Max+1))
-	p.ProgressChannel = &pc
+		defer p.Mu.Unlock()
+		if p.ProgressChannel == nil {
+			c := make(chan float64, int(p.Max))
+			p.ProgressChannel = &c
+		}
+		*p.ProgressChannel <- f
 
-	go p.monitorProgressChannel()
-	return *p.ProgressChannel
+	}
 }

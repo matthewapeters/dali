@@ -56,7 +56,6 @@ func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progres
 	height := view.Image.LowerRight.Y - view.Image.UpperLeft.Y
 	chout := make(chan *Iterant, width*height)
 	defer close(chout)
-	pc := progress.Channel()
 
 	image := image.NewRGBA(image.Rect(0, 0, width, height))
 	NoCPUs := runtime.NumCPU()
@@ -72,14 +71,12 @@ func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progres
 		i := <-chout
 		if i != nil {
 			image.Set(i.Pixel.X, i.Pixel.Y, view.Pallette(i))
-			if math.Mod(float64(pixelCount), 1000.0) == 0 {
-				pc <- float64(pixelCount)
-			}
+			progress.Status(float64(pixelCount))
+
 		}
 	}
-	close(*progress.ProgressChannel)
 	chunkWG.Wait()
-	progress.Reset()
+	progress.Status(0.0)
 	display.Load(image)
 }
 
@@ -259,7 +256,7 @@ func main() {
 	display.SetStyle(`border:solid 1px #333333;display:block;margin:auto;`)
 	div.Elements.AddElement(display)
 
-	tabl := dali.NewTableElement("menus", 3, 4, []string{"", "Explore the Mandelbrot Set", ""})
+	tabl := dali.NewTableElement("menus", 3, 3, []string{"", "Explore the Mandelbrot Set", ""})
 	tabl.SetStyle("width:100%;padding:5px;")
 	tabl.SetCommonStyles("padding:0px;margin:none;")
 	a, _ := tabl.GetCell(0, 0)
@@ -411,14 +408,15 @@ func main() {
 	viewName := dali.NewInputElement("viewName", dali.HiddenInput)
 
 	c, _ = tabl.GetCell(0, 1)
-	c.Style = "text-align:center"
+	c.Style = "text-align:left"
 	c.Elements.AddElement(&dali.Span{Text: "Favorites"})
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(favs)
 	c.Elements.AddElement(saveButton)
 	c.Elements.AddElement(viewName)
+	c.Elements.AddElement(dali.LineBreak())
+	c.Elements.AddElement(dali.LineBreak())
 
-	c, _ = tabl.GetCell(2, 1)
 	c.Elements.AddElement(&dali.Span{Text: "Render Progress:"})
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(progress)
