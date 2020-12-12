@@ -64,7 +64,7 @@ func (p *ProgressElement) monitorProgressChannel() {
 
 // Status receives the status value to report in the progress bar
 func (p *ProgressElement) Status(f float64) {
-	if math.Mod(f, p.Max/100.0) <= 0.5 {
+	if p.Max >= 1000.0 && math.Mod(f, p.Max/100.0) <= 0.5 || p.Max < 1000.0 {
 		p.Mu.Lock()
 		defer p.Mu.Unlock()
 		if p.ProgressChannel == nil {

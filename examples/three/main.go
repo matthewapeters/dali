@@ -71,7 +71,7 @@ func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progres
 		i := <-chout
 		if i != nil {
 			image.Set(i.Pixel.X, i.Pixel.Y, view.Pallette(i))
-			progress.Status(float64(pixelCount))
+			go progress.Status(float64(pixelCount))
 
 		}
 	}
