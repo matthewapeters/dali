@@ -30,7 +30,18 @@ func drawChunk(start, chunk, height, iterations int, view *ViewPort, wg *sync.Wa
 			zn := z
 			var n int
 			for n = 0; n < iterations; n++ {
+				// Newtonian Iteration
+				//2z3 - z2 - c)/(3z2 - 2z - c)
+				//zn = (2*zn*zn*zn - zn*zn - z) / (3*zn*zn - 2*zn - z)
+
+				// Traditional Mandelbrot
+				// z^2 + c
 				zn = zn*zn + z
+
+				//
+				//zn = complex(math.Sin(real(zn))*math.Cosh(imag(zn)), math.Cos(real(zn)*math.Sinh(imag(zn)))) + z
+
+				//if cmplx.Abs(zn) > 0.01 {
 				if cmplx.Abs(zn) > 2 {
 					break
 				}
@@ -63,7 +74,7 @@ func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progres
 
 	for a := 0; a < width; a += Chunk {
 		chunkWG.Add(1)
-		go drawChunk(a, Chunk, height, iterations, view, &chunkWG, chout)
+		go drawChunk(int(a), int(Chunk), height, iterations, view, &chunkWG, chout)
 	}
 
 	// Wait until all of the pixels are done are finished drawing
@@ -252,9 +263,11 @@ func main() {
 	div := dali.NewDiv("displayDiv")
 	div.SetStyle(`background-color:#BBBBBB;width:1260;height:900;`)
 
+	overlay := dali.NewCanvas("overlay", 900, 700)
 	display := dali.NewImage("display", 900, 700, "")
 	display.SetStyle(`border:solid 1px #333333;display:block;margin:auto;`)
-	div.Elements.AddElement(display)
+	overlay.Elements.AddElement(display)
+	div.Elements.AddElement(overlay)
 
 	tabl := dali.NewTableElement("menus", 3, 3, []string{"", "Explore the Mandelbrot Set", ""})
 	tabl.SetStyle("width:100%;padding:5px;")

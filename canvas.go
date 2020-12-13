@@ -6,30 +6,30 @@ import "fmt"
 type Canvas struct {
 	Width, Height int
 	Base
+	Elements *Elements
 }
 
 //NewCanvas creates a new Canvas
-func NewCanvas(width, height int, name string) *Canvas {
+func NewCanvas(name string, width, height int) *Canvas {
 	return &Canvas{
 		Width:  width,
 		Height: height,
-		Base:   Base{ID: name},
+		Base: Base{ID: name,
+			BoundEvents: &BoundEvents{}},
+		Elements: &Elements{},
 	}
 }
 
 // Children will return an empty Elements
-func (c *Canvas) Children() *Elements { return &Elements{slice: []*Element{}} }
+func (c *Canvas) Children() *Elements { return c.Elements }
 
 func (c *Canvas) String() string {
 	style := ""
 	if c.Base.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, c.Style)
 	}
-	return fmt.Sprintf(`<canvas id="%s" width="%dpx" height="%dpx"%s></canvas>`, c.ID, c.Width, c.Height, style)
+	return fmt.Sprintf(`<canvas id="%s" width="%dpx" height="%dpx"%s>%s</canvas>`, c.ID, c.Width, c.Height, style, c.Elements)
 }
 
 // Class of the canvas
 func (c *Canvas) Class() string { return "canvas" }
-
-// Clickable is false on Canvas
-func (c *Canvas) Clickable() bool { return false }

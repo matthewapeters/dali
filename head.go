@@ -10,7 +10,7 @@ type HeadElement struct {
 }
 
 // Bindings returns nil
-func (h *HeadElement) Bindings() BoundEvents { return nil }
+func (h *HeadElement) Bindings() *BoundEvents { return nil }
 
 //Children returns the Elements
 func (h *HeadElement) Children() *Elements { return h.Elements }
@@ -43,7 +43,7 @@ type ScriptElement struct {
 }
 
 // Bindings returns nil
-func (scr *ScriptElement) Bindings() BoundEvents { return nil }
+func (scr *ScriptElement) Bindings() *BoundEvents { return nil }
 
 func (scr *ScriptElement) String() string {
 	src := ""
@@ -77,7 +77,7 @@ type TitleElement struct {
 }
 
 //Bindings returns nil
-func (t *TitleElement) Bindings() BoundEvents { return nil }
+func (t *TitleElement) Bindings() *BoundEvents { return nil }
 
 //Children will return an empty Elements
 func (t *TitleElement) Children() *Elements { return &Elements{slice: []*Element{}} }
@@ -104,34 +104,28 @@ func (b *BodyElement) String() string {
 	if b.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, b.Style)
 	}
-	onLoad := ""
-	if b.BoundEvents != nil {
-		for e, bnd := range *b.BoundEvents {
-			onLoad += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
-		}
-	}
-	return fmt.Sprintf(`<body%s%s>%s</body>`, onLoad, style, b.Elements)
+	return fmt.Sprintf(`<body%s%s>%s</body>`, b.BoundEvents, style, b.Elements)
 }
 
 //Children return the Elements
 func (b *BodyElement) Children() *Elements { return b.Elements }
 
 // Bindings returns the Binding
-func (b *BodyElement) Bindings() BoundEvents { return b.BoundEvents }
+func (b *BodyElement) Bindings() *BoundEvents { return b.BoundEvents }
 
 //NewBodyElement creates a body element
 func NewBodyElement(onLoad string) *BodyElement {
 	els := Elements{slice: []*Element{}}
 	var bindings BoundEvents
 	if onLoad != "" {
-		bindings = &map[EventType]*Binding{LoadEvent: &Binding{FunctionName: "body_on_load"}}
+		bindings = BoundEvents{LoadEvent: &Binding{FunctionName: "body_on_load"}}
 	}
 
 	return &BodyElement{
 		Elements: &els,
 		Base: Base{
 			ID:          "BODY",
-			BoundEvents: bindings,
+			BoundEvents: &bindings,
 		},
 	}
 }

@@ -8,7 +8,7 @@ import (
 )
 
 //BoundEvents is a mapping of events and the bound functions that trigger
-type BoundEvents *map[EventType]*Binding
+type BoundEvents map[EventType]*Binding
 
 //Element is an interface for describing an HTML element
 type Element interface {
@@ -19,7 +19,7 @@ type Element interface {
 	Styles() string
 	SetStyle(string)
 	Children() *Elements
-	Bindings() BoundEvents
+	Bindings() *BoundEvents
 	Value() string
 	SetUI(*lorca.UI)
 	GetUI() *lorca.UI
@@ -30,7 +30,7 @@ type Base struct {
 	ID          string
 	Style       string
 	UI          *lorca.UI
-	BoundEvents BoundEvents
+	BoundEvents *BoundEvents
 	Element
 }
 
@@ -41,7 +41,7 @@ func (b *Base) BindFunction(e EventType, functionName string, boundFunction func
 }
 
 //Bindings returns the map of events to bound functions
-func (b *Base) Bindings() BoundEvents { return b.BoundEvents }
+func (b *Base) Bindings() *BoundEvents { return b.BoundEvents }
 
 //SetText replaces the inner text of the element after the Window has been started
 func (b *Base) SetText(s string) error {
@@ -123,4 +123,13 @@ func (els *Elements) String() string {
 func (els *Elements) AddElement(e Element) {
 	newSlice := append(els.slice, &e)
 	els.slice = newSlice
+}
+
+func (be *BoundEvents) String() string {
+	bindings := ""
+	for e, b := range *be {
+		bindings += fmt.Sprintf(` %s="%s()"`, e, b.FunctionName)
+
+	}
+	return bindings
 }

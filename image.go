@@ -119,7 +119,7 @@ func (i *Image) String() string {
 }
 
 //Bindings returns nil
-func (i *Image) Bindings() BoundEvents { return nil }
+func (i *Image) Bindings() *BoundEvents { return &BoundEvents{} }
 
 //Children returns an empty Elements
 func (i *Image) Children() *Elements { return &Elements{slice: []*Element{}} }

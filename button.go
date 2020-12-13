@@ -11,16 +11,10 @@ type Button struct {
 
 func (b *Button) String() string {
 	style := ""
-	bindings := ""
 	if b.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, b.Style)
 	}
-	if b.BoundEvents != nil {
-		for e, bnd := range *b.BoundEvents {
-			bindings += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
-		}
-	}
-	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.Name(), bindings, style, b.ButtonText)
+	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.Name(), b.BoundEvents, style, b.ButtonText)
 }
 
 // Children will return an empty Elements
@@ -41,7 +35,7 @@ func NewButton(label, name, funcName string) *Button {
 
 	return &Button{
 		Base: Base{ID: name,
-			BoundEvents: &map[EventType]*Binding{
+			BoundEvents: &BoundEvents{
 				ClickEvent: &Binding{FunctionName: funcName},
 			},
 		},
