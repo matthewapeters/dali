@@ -9,9 +9,6 @@ type HeadElement struct {
 	Base
 }
 
-// Bindings returns nil
-func (h *HeadElement) Bindings() *BoundEvents { return nil }
-
 //Children returns the Elements
 func (h *HeadElement) Children() *Elements { return h.Elements }
 
@@ -41,9 +38,6 @@ type ScriptElement struct {
 	Text string
 	Base
 }
-
-// Bindings returns nil
-func (scr *ScriptElement) Bindings() *BoundEvents { return nil }
 
 func (scr *ScriptElement) String() string {
 	src := ""
@@ -76,9 +70,6 @@ type TitleElement struct {
 	Base
 }
 
-//Bindings returns nil
-func (t *TitleElement) Bindings() *BoundEvents { return nil }
-
 //Children will return an empty Elements
 func (t *TitleElement) Children() *Elements { return &Elements{slice: []*Element{}} }
 
@@ -109,9 +100,6 @@ func (b *BodyElement) String() string {
 
 //Children return the Elements
 func (b *BodyElement) Children() *Elements { return b.Elements }
-
-// Bindings returns the Binding
-func (b *BodyElement) Bindings() *BoundEvents { return b.BoundEvents }
 
 //NewBodyElement creates a body element
 func NewBodyElement(onLoad string) *BodyElement {

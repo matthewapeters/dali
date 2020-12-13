@@ -8,9 +8,6 @@ type Div struct {
 	Elements *Elements
 }
 
-// Bindings returns the binding
-func (p *Div) Bindings() *BoundEvents { return p.BoundEvents }
-
 //Children returns the Elements
 func (p *Div) Children() *Elements { return p.Elements }
 

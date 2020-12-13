@@ -15,15 +15,12 @@ type Heading struct {
 //Children return nil for Headings
 func (hd *Heading) Children() *Elements { return &Elements{} }
 
-//Bindings returns the bindings for Headings
-func (hd *Heading) Bindings() *BoundEvents { return hd.BoundEvents }
-
 func (hd *Heading) String() string {
 	style := ""
 	if hd.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, hd.Style)
 	}
-	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.Name(), style, *hd.BoundEvents, hd.Text)
+	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.Name(), style, hd.BoundEvents, hd.Text)
 }
 
 //Headings is the collection of headings
@@ -51,9 +48,6 @@ func (cell *Cell) String() string {
 	}
 	return fmt.Sprintf(`<td%s>%s</td>`, style, cell.Elements)
 }
-
-//Bindings returns nil for Cell
-func (cell *Cell) Bindings() *BoundEvents { return nil }
 
 // Children returns the Cell's child elements
 func (cell *Cell) Children() *Elements { return cell.Elements }
@@ -180,7 +174,8 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 	for i, h := range headings {
 		h := Heading{
 			Base: Base{
-				ID: fmt.Sprintf(`heading_%d`, i),
+				ID:          fmt.Sprintf(`heading_%d`, i),
+				BoundEvents: &BoundEvents{},
 			},
 			Text: h,
 		}
@@ -206,9 +201,6 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 
 	return tab
 }
-
-//Bindings returns empty Bindings on table
-func (tab *Table) Bindings() *BoundEvents { return nil }
 
 //Children will return each of the table  Cells
 func (tab *Table) Children() *Elements {

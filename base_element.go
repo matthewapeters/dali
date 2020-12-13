@@ -126,6 +126,9 @@ func (els *Elements) AddElement(e Element) {
 }
 
 func (be *BoundEvents) String() string {
+	if *be == nil {
+		return ""
+	}
 	bindings := ""
 	for e, b := range *be {
 		bindings += fmt.Sprintf(` %s="%s()"`, e, b.FunctionName)

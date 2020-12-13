@@ -118,9 +118,6 @@ func (i *Image) String() string {
 	return img
 }
 
-//Bindings returns nil
-func (i *Image) Bindings() *BoundEvents { return &BoundEvents{} }
-
 //Children returns an empty Elements
 func (i *Image) Children() *Elements { return &Elements{slice: []*Element{}} }
 
