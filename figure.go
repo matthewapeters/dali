@@ -18,7 +18,6 @@ const (
 type FigureCaption struct {
 	Base
 	Span
-	BoundEvents BoundEvents
 	CaptionType
 }
 
@@ -29,7 +28,7 @@ func (fc *FigureCaption) String() string {
 // Figure is a potentially captioned element, commonly holding images and other content
 type Figure struct {
 	Base
-	Elements
+	Elements      *Elements
 	FigureCaption *FigureCaption
 }
 
@@ -39,7 +38,7 @@ func NewFigure(name, caption string, captPlacement CaptionType) *Figure {
 		Base: Base{
 			ID: name,
 		},
-		Elements: Elements{},
+		Elements: &Elements{},
 		FigureCaption: &FigureCaption{
 			CaptionType: captPlacement,
 			Base: Base{
@@ -51,4 +50,17 @@ func NewFigure(name, caption string, captPlacement CaptionType) *Figure {
 			},
 		},
 	}
+}
+
+//Children Returns the child elements for the figure
+func (fig *Figure) Children() *Elements { return fig.Elements }
+
+func (fig *Figure) String() string {
+	switch fig.FigureCaption.CaptionType {
+	case BeforeCaption:
+		return fmt.Sprintf(`<figure id="%s">%s%s</figure>`, fig.Name(), fig.FigureCaption, fig.Elements)
+	case AfterCaption:
+		return fmt.Sprintf(`<figure id="%s">%s%s</figure>`, fig.Name(), fig.Elements, fig.FigureCaption)
+	}
+	return fmt.Sprintf(`<figure id="%s">%s</figure>`, fig.Name(), fig.Elements)
 }

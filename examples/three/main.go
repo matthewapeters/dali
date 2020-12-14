@@ -60,7 +60,7 @@ func drawChunk(start, chunk, height, iterations int, view *ViewPort, wg *sync.Wa
 }
 
 // DrawMandelbrot will Draw Mandelbrot images
-func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progress *dali.ProgressElement) {
+func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Canvas, progress *dali.ProgressElement) {
 
 	chunkWG := sync.WaitGroup{}
 	width := view.Image.LowerRight.X - view.Image.UpperLeft.X
@@ -87,12 +87,12 @@ func DrawMandelbrot(view *ViewPort, iterations int, display *dali.Image, progres
 		}
 	}
 	chunkWG.Wait()
+	display.DrawImage(image, 0, 0)
 	progress.Status(0.0)
-	display.Load(image)
 }
 
 //FindMandelbrotSet iterates over C to determine members of the Mandelbrot set
-func FindMandelbrotSet(w *dali.Window, image *dali.Image, control *sync.Mutex, vp *ViewPort, progress *dali.ProgressElement) {
+func FindMandelbrotSet(w *dali.Window, image *dali.Canvas, control *sync.Mutex, vp *ViewPort, progress *dali.ProgressElement) {
 	for i := 0; i < 5000; i += 25 {
 		control.Lock()
 		w.GetUI().Eval(fmt.Sprintf(`document.getElementById("iterations").value="%d";`, i))
@@ -106,7 +106,7 @@ func FindMandelbrotSet(w *dali.Window, image *dali.Image, control *sync.Mutex, v
 }
 
 // ZoomIn will reduce the range of the C Plan within the viewport
-func ZoomIn(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *ViewPort,
+func ZoomIn(image *dali.Canvas, iterations, zoomLevel *dali.InputElement, vp *ViewPort,
 	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
@@ -124,7 +124,7 @@ func ZoomIn(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *Vie
 }
 
 // ZoomOut will increase the range of the C Plan within the viewport
-func ZoomOut(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *ViewPort,
+func ZoomOut(image *dali.Canvas, iterations, zoomLevel *dali.InputElement, vp *ViewPort,
 	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
@@ -141,7 +141,7 @@ func ZoomOut(image *dali.Image, iterations, zoomLevel *dali.InputElement, vp *Vi
 }
 
 // PanLeft will shift the Complex Plane to the right within the viewport
-func PanLeft(image *dali.Image, iterations, focalPointReal *dali.InputElement, vp *ViewPort,
+func PanLeft(image *dali.Canvas, iterations, focalPointReal *dali.InputElement, vp *ViewPort,
 	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
@@ -160,7 +160,7 @@ func PanLeft(image *dali.Image, iterations, focalPointReal *dali.InputElement, v
 }
 
 // PanRight will shift the Complex Plane to the left within the viewport
-func PanRight(image *dali.Image, iterations, focalPointReal *dali.InputElement, vp *ViewPort,
+func PanRight(image *dali.Canvas, iterations, focalPointReal *dali.InputElement, vp *ViewPort,
 	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
@@ -179,7 +179,7 @@ func PanRight(image *dali.Image, iterations, focalPointReal *dali.InputElement, 
 }
 
 // PanUp will shift the Complex Plane down within the viewport
-func PanUp(image *dali.Image, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort,
+func PanUp(image *dali.Canvas, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort,
 	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	length := 4.0 * vp.ZoomLevel
@@ -197,7 +197,7 @@ func PanUp(image *dali.Image, iterations, focalPointImaginary *dali.InputElement
 }
 
 // PanDown will shift the Complex Plane up within the viewport
-func PanDown(image *dali.Image, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort,
+func PanDown(image *dali.Canvas, iterations, focalPointImaginary *dali.InputElement, vp *ViewPort,
 	control *sync.Mutex, progress *dali.ProgressElement) {
 	control.Lock()
 	length := 4.0 * vp.ZoomLevel
@@ -215,7 +215,7 @@ func PanDown(image *dali.Image, iterations, focalPointImaginary *dali.InputEleme
 }
 
 //UpdateDisplay will redraw the Mandelbrot set based on Window values
-func UpdateDisplay(VP *ViewPort, display *dali.Image, control *sync.Mutex, iterations,
+func UpdateDisplay(VP *ViewPort, display *dali.Canvas, control *sync.Mutex, iterations,
 	zoomLevel, focalPointReal, focalPointImaginary *dali.InputElement, progress *dali.ProgressElement) {
 	control.Lock()
 	defer control.Unlock()
@@ -263,11 +263,9 @@ func main() {
 	div := dali.NewDiv("displayDiv")
 	div.SetStyle(`background-color:#BBBBBB;width:1260;height:900;`)
 
-	overlay := dali.NewCanvas("overlay", 900, 700)
-	display := dali.NewImage("display", 900, 700, "")
+	display := dali.NewCanvas("display", 900, 700)
 	display.SetStyle(`border:solid 1px #333333;display:block;margin:auto;`)
-	overlay.Elements.AddElement(display)
-	div.Elements.AddElement(overlay)
+	div.Elements.AddElement(display)
 
 	tabl := dali.NewTableElement("menus", 3, 3, []string{"", "Explore the Mandelbrot Set", ""})
 	tabl.SetStyle("width:100%;padding:5px;")
