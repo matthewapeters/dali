@@ -95,6 +95,18 @@ $ ./examples_three
 ```
 The objective for this example was to identify highly used Javascripting in order to improve the Dali feature set, and to produce an application which exercised the power of Golang's concurrency and speed.
 
+### Example Four ###  
+Adding Media Stream access with a Video Element
+
+<img alt="HTTPS without trusted cert" src="./docs/four_one.png" style="width:180px; height:140px;">  
+<img alt="Permit Audio and Video" src="./docs/four_two.png" style="width:180px;height:140px;")  
+Using StartTLS to launch the window, we can enguage the camera and microphone, and display video streams.  
+
+![Display stream from camera, and sound from microphone](./docs/four_three.png)
+Would like to try with [pion/webrtc](https://github.com/pion/webrtc) sometime in the future.
+
+
+
 # Contributing to Dali #  
 
 I am happy to incorporate contributions and improvements.  As a rule, I am hoping to accomplish the following with this project:
