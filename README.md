@@ -102,8 +102,9 @@ Adding Media Stream access with a Video Element
 <img alt="Permit Audio and Video" src="./docs/four_two.png" style="width:180px;height:140px;")  
 Using StartTLS to launch the window, we can enguage the camera and microphone, and display video streams.  
 
-![Display stream from camera, and sound from microphone](./docs/four_three.png)
-Would like to try with [pion/webrtc](https://github.com/pion/webrtc) sometime in the future.
+![Display stream from camera, and sound from microphone](./docs/four_three.png)  
+
+I would like to try with [pion/webrtc](https://github.com/pion/webrtc) sometime in the future to illustrate direct peer-to-peer video chat clients.
 
 
 
