@@ -2,6 +2,7 @@ package dali
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 
 	"github.com/zserge/lorca"
@@ -115,6 +116,43 @@ func (w *Window) BindChildren(el *Element) {
 			w.BindChildren(c)
 		}
 	}
+}
+func (w *Window) basicHandler(rw http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(rw, fmt.Sprintf("%s", w))
+}
+
+// StartTLS starts the Window with a TLS backend
+func (w *Window) StartTLS(crt, key string) error {
+
+	newui, err := lorca.New(
+		"",
+		w.ProfileDir,
+		w.Width,
+		w.Height,
+		w.Args...)
+	if err != nil {
+		fmt.Println("dali.StartTLS:newui:", err)
+		return err
+	}
+	w.ui = newui
+
+	http.HandleFunc("/dali", w.basicHandler)
+
+	go http.ListenAndServeTLS(":9000", crt, key, nil)
+
+	w.BindChildren(nil)
+
+	//Apply Bindings
+	for _, bound := range w.Bindings {
+		err = newui.Bind(bound.FunctionName, bound.BoundFunction)
+		if err != nil {
+			fmt.Println("dali.StartTLS:Bindings: ", err)
+			return err
+		}
+	}
+	fmt.Println("here")
+	newui.Load("https://127.0.0.1:9000/dali")
+	return nil
 }
 
 // Start extracts the application HTML and starts the UI
