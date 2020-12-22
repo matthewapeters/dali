@@ -21,7 +21,7 @@ func NewProgressElement(name, id string, max float64) *ProgressElement {
 	c := make(chan float64, int(max))
 
 	return &ProgressElement{
-		Base:            Base{ElementName: name, ElementID: id},
+		Base:            Base{ElementName: name, ElementID: id, ElementClass: "progress"},
 		Max:             max,
 		CurrentValue:    0,
 		Mu:              sync.Mutex{},
@@ -41,11 +41,7 @@ func (p *ProgressElement) Value() string {
 
 func (p *ProgressElement) String() string {
 	go p.monitorProgressChannel()
-	style := ""
-	if p.Style() != "" {
-		style = fmt.Sprintf(` style="%s"`, p.Style())
-	}
-	return fmt.Sprintf(`<progress id="%s" value="%f" max="%f"%s></progress>`, p.ID(), p.CurrentValue, p.Max, style)
+	return fmt.Sprintf(`<%s %s%s value="%f" max="%f"%s></%s>`, p.Class(), p.getName(), p.getID(), p.CurrentValue, p.Max, p.getStyle(), p.Class())
 }
 
 // monitors a progress channel.  If the channel is closed, returns.

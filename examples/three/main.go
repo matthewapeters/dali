@@ -241,7 +241,7 @@ func main() {
 		ZoomLevel:                1.0,
 		Pallette:                 SeussyPallette,
 	}
-	progress := dali.NewProgressElement("redrawProgressBarr", 900*700)
+	progress := dali.NewProgressElement("redrawProgressBarr", "redrawProgressBarr", 900*700)
 
 	Window := dali.NewWindow(1280, 920, "", "")
 	Head := dali.NewHeadElement()
@@ -260,20 +260,20 @@ func main() {
 	Window.Elements.AddElement(Head)
 	Body := dali.NewBodyElement("first_view")
 
-	div := dali.NewDiv("displayDiv")
+	div := dali.NewDiv("displayDiv", "displayDiv")
 	div.SetStyle(`background-color:#BBBBBB;width:1260;height:900;`)
 
-	display := dali.NewCanvas("display", 900, 700)
+	display := dali.NewCanvas("display", "display", 900, 700)
 	display.SetStyle(`border:solid 1px #333333;display:block;margin:auto;`)
 	div.Elements.AddElement(display)
 
-	tabl := dali.NewTableElement("menus", 3, 3, []string{"", "Explore the Mandelbrot Set", ""})
+	tabl := dali.NewTableElement("menus", "menus", 3, 3, []string{"", "Explore the Mandelbrot Set", ""})
 	tabl.SetStyle("width:100%;padding:5px;")
 	tabl.SetCommonStyles("padding:0px;margin:none;")
 	a, _ := tabl.GetCell(0, 0)
 	a.SetStyle("width:33%;")
 
-	startButton := dali.NewButton("Start Iterations", "start", "start_iterations")
+	startButton := dali.NewButton("Start Iterations", "start", "start", "start_iterations")
 	startButton.SetBoundFunction(dali.ClickEvent, func() {
 		startButton.Disable()
 		FindMandelbrotSet(Window, display, &control, VP, progress)
@@ -281,7 +281,7 @@ func main() {
 		Window.GetUI().Eval(`document.getElementById("start").disabled=false;`)
 	})
 
-	pauseButton := dali.NewButton("Pause Iteration", "pause", "pause_iteration")
+	pauseButton := dali.NewButton("Pause Iteration", "pause", "pause", "pause_iteration")
 
 	toggle := make(chan bool)
 	go func() {
@@ -301,7 +301,7 @@ func main() {
 
 	pauseButton.SetBoundFunction(dali.ClickEvent, func() { toggle <- true })
 
-	palette := dali.NewSelectElement("palette", "pick_palette")
+	palette := dali.NewSelectElement("palette", "palette", "pick_palette")
 	palette.AddOption("Dr Seussy", "1")
 	palette.AddOption("Dr Lucy", "8")
 	palette.AddOption("Dr Spock", "9")
@@ -315,18 +315,18 @@ func main() {
 	palette.AddOption("Colorful Three", "12")
 	palette.AddOption("High Zoom", "11")
 
-	zoomInButton := dali.NewButton("Zoom In", "zoomIn", "do_zoom_in")
-	zoomOutButton := dali.NewButton("Zoom Out", "zoomOut", "do_zoom_out")
+	zoomInButton := dali.NewButton("Zoom In", "zoomIn", "zoomIn", "do_zoom_in")
+	zoomOutButton := dali.NewButton("Zoom Out", "zoomOut", "zoomOut", "do_zoom_out")
 
-	zoomLevel := dali.NewInputElement("zoomLevel", dali.NumberInput)
+	zoomLevel := dali.NewInputElement("zoomLevel", "zoomLevel", dali.NumberInput)
 	zoomLevel.SetStyle("width:14em;")
 	zoomLevel.Text = "1.0"
 
-	panLeftButton := dali.NewButton("Pan Left", "left", "do_pan_left")
-	panRightButton := dali.NewButton("Pan Right", "right", "do_pan_right")
-	panUpButton := dali.NewButton("Pan Up", "up", "do_pan_up")
-	panDownButton := dali.NewButton("Pan Down", "down", "do_pan_down")
-	panTable := dali.NewTableElement("panTable", 3, 3, []string{})
+	panLeftButton := dali.NewButton("Pan Left", "left", "left", "do_pan_left")
+	panRightButton := dali.NewButton("Pan Right", "right", "right", "do_pan_right")
+	panUpButton := dali.NewButton("Pan Up", "up", "up", "do_pan_up")
+	panDownButton := dali.NewButton("Pan Down", "down", "down", "do_pan_down")
+	panTable := dali.NewTableElement("panTable", "panTable", 3, 3, []string{})
 	panTable.SetCommonStyles("align-items:center;text-align:center;")
 	panCell, _ := panTable.GetCell(1, 0)
 	panCell.Elements.AddElement(panUpButton)
@@ -337,27 +337,27 @@ func main() {
 	panCell, _ = panTable.GetCell(1, 1)
 	panCell.Elements.AddElement(panDownButton)
 
-	focalPointTable := dali.NewTableElement("focalPointTable", 2, 2, []string{})
-	focalPointTable.Style = "float:right;"
-	focalPointReal := dali.NewInputElement("focalPointReal", dali.NumberInput)
+	focalPointTable := dali.NewTableElement("focalPointTable", "focalPointTable", 2, 2, []string{})
+	focalPointTable.SetStyle("float:right;")
+	focalPointReal := dali.NewInputElement("focalPointReal", "focalPointReal", dali.NumberInput)
 	focalPointReal.SetStyle("width:15em;")
 	focalPointReal.Text = fmt.Sprintf("%f", real(VP.ImaginaryPlaneFocalPoint))
 	focalPointReal.InputEventType = dali.OnBlur
-	focalPointImaginary := dali.NewInputElement("focalPointImaginary", dali.NumberInput)
+	focalPointImaginary := dali.NewInputElement("focalPointImaginary", "focalPointImaginary", dali.NumberInput)
 	focalPointImaginary.Text = fmt.Sprintf("%f", imag(VP.ImaginaryPlaneFocalPoint))
 	focalPointImaginary.InputEventType = dali.OnBlur
 	focalPointImaginary.SetStyle("width:15em;")
 	fpCell, _ := focalPointTable.GetCell(0, 0)
-	fpCell.Elements.AddElement(&dali.Span{Text: "Focal Point: Real: "})
+	fpCell.Elements.AddElement(dali.NewSpanElement("realLable", "realLabel", "Focal Point: Real: "))
 	fpCell, _ = focalPointTable.GetCell(1, 0)
 	fpCell.Elements.AddElement(focalPointReal)
 	fpCell, _ = focalPointTable.GetCell(0, 1)
-	fpCell.Elements.AddElement(&dali.Span{Text: " Imaginary: "})
+	fpCell.Elements.AddElement(dali.NewSpanElement("imagLabel", "imagLabel", " Imaginary: "))
 	fpCell, _ = focalPointTable.GetCell(1, 1)
 	fpCell.Elements.AddElement(focalPointImaginary)
 
-	iterationsDiv := dali.NewDiv("iterationMenu")
-	iterations := dali.NewInputElement("iterations", dali.NumberInput)
+	iterationsDiv := dali.NewDiv("iterationMenu", "iterationMenu")
+	iterations := dali.NewInputElement("iterations", "iterations", dali.NumberInput)
 	zoomOutButton.SetBoundFunction(dali.ClickEvent, func() { ZoomOut(display, iterations, zoomLevel, VP, &control, progress) })
 	zoomInButton.SetBoundFunction(dali.ClickEvent, func() { ZoomIn(display, iterations, zoomLevel, VP, &control, progress) })
 	panLeftButton.SetBoundFunction(dali.ClickEvent, func() { PanLeft(display, iterations, focalPointReal, VP, &control, progress) })
@@ -366,7 +366,7 @@ func main() {
 	panUpButton.SetBoundFunction(dali.ClickEvent, func() { PanUp(display, iterations, focalPointImaginary, VP, &control, progress) })
 	iterations.Text = "1000"
 	iterations.SetStyle("width:10em;")
-	iterationsDiv.Elements.AddElement(&dali.Span{Text: "Iterations: "})
+	iterationsDiv.Elements.AddElement(dali.NewSpanElement("iterLabel", "iterLabel", "Iterations: "))
 	iterationsDiv.Elements.AddElement(iterations)
 	iterationsDiv.Elements.AddElement(dali.LineBreak())
 	iterationsDiv.Elements.AddElement(startButton)
@@ -375,24 +375,24 @@ func main() {
 	c, _ := tabl.GetCell(0, 0)
 	c.Elements.AddElement(iterationsDiv)
 	c, _ = tabl.GetCell(1, 0)
-	c.Elements.AddElement(&dali.Span{Text: "Palette: "})
+	c.Elements.AddElement(dali.NewSpanElement("palLabel", "palLabel", "Palette: "))
 	c.Elements.AddElement(palette)
 
 	c, _ = tabl.GetCell(1, 1)
-	c.SetStyle(c.Style + ";text-align:center;item-align:center")
+	c.SetStyle(c.Style() + ";text-align:center;item-align:center")
 	//c.Elements.AddElement(dali.LineBreak())
-	panTable.Style = "width:100%;self-align:center;border:solid 1px"
+	panTable.SetStyle("width:100%;self-align:center;border:solid 1px")
 	c.Elements.AddElement(panTable)
 	c, _ = tabl.GetCell(2, 0)
-	c.Style += ";item-align:right;text-align:right;"
+	c.SetStyle(c.Style() + ";item-align:right;text-align:right;")
 	c.Elements.AddElement(focalPointTable)
 
-	zoomMenu := dali.NewDiv("zoomMenu")
+	zoomMenu := dali.NewDiv("zoomMenu", "zoomMenu")
 	zoomMenu.Elements.AddElement(zoomInButton)
 	zoomMenu.Elements.AddElement(zoomLevel)
 	zoomMenu.Elements.AddElement(zoomOutButton)
 	c, _ = tabl.GetCell(1, 2)
-	c.Style = "align:center"
+	c.SetStyle("align:center")
 	c.Elements.AddElement(zoomMenu)
 
 	favs, err := NewFavorites()
@@ -410,17 +410,17 @@ func main() {
 		VP.ZoomLevel = fv.ZoomLevel
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
-	saveButton := dali.NewButton("Save View", "saveButton", "saveFavorite")
+	saveButton := dali.NewButton("Save View", "saveButton", "saveButton", "saveFavorite")
 	saveButton.SetBoundFunction(dali.ClickEvent, func() {
 		Window.GetUI().Eval(`name_favorite_spot();`)
 		favName := fmt.Sprintf("%s", Window.GetUI().Eval(`document.getElementById("viewName").value`))
 		favs.AddFavoriteSpot(favName, focalPointReal, focalPointImaginary, zoomLevel, iterations)
 	})
-	viewName := dali.NewInputElement("viewName", dali.HiddenInput)
+	viewName := dali.NewInputElement("viewName", "viewName", dali.HiddenInput)
 
 	c, _ = tabl.GetCell(0, 1)
-	c.Style = "text-align:left"
-	c.Elements.AddElement(&dali.Span{Text: "Favorites"})
+	c.SetStyle("text-align:left")
+	c.Elements.AddElement(dali.NewSpanElement("favLabel", "favLabel", "Favorites"))
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(favs)
 	c.Elements.AddElement(saveButton)
@@ -428,7 +428,7 @@ func main() {
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(dali.LineBreak())
 
-	c.Elements.AddElement(&dali.Span{Text: "Render Progress:"})
+	c.Elements.AddElement(dali.NewSpanElement("rendrLabel", "rendrLabel", "Render Progress:"))
 	c.Elements.AddElement(dali.LineBreak())
 	c.Elements.AddElement(progress)
 

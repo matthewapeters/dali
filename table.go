@@ -148,7 +148,8 @@ type Table struct {
 }
 
 func (tab *Table) String() string {
-	return fmt.Sprintf(`<table%s%s%s>%s%s%c</table>`, tab.getName(), tab.getID(), tab.getStyle(), tab.THead, tab.TBody, 10)
+	return fmt.Sprintf(`<%s%s%s%s>%s%s%c</%s>`, tab.Class(), tab.getName(), tab.getID(),
+		tab.getStyle(), tab.THead, tab.TBody, 10, tab.Class())
 }
 
 // NewTableElement creates a new Table element
@@ -160,7 +161,7 @@ func NewTableElement(name, id string, columns, rows int, headings []string) *Tab
 		ColumnCount: columns,
 		RowCount:    rows,
 		Base: Base{
-			ElementID: id, ElementName: name,
+			ElementID: id, ElementName: name, ElementClass: "table",
 		},
 		THead:    &THead{HeadingRow: &headingRow},
 		TBody:    &TBody{Rows: tableRows},

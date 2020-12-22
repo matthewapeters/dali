@@ -89,7 +89,12 @@ type Image struct {
 // NewImage generates a new Image object
 func NewImage(name, id string, width, height int, url string) *Image {
 	return &Image{
-		Base:    Base{ElementName: name, ElementID: id},
+		Base: Base{
+			ElementName:  name,
+			ElementID:    id,
+			ElementClass: "image",
+			ElementStyle: fmt.Sprintf(`width:%d;height:%d;`, width, height),
+		},
 		Width:   width,
 		Height:  height,
 		URL:     url,
@@ -100,18 +105,15 @@ func NewImage(name, id string, width, height int, url string) *Image {
 //String for image
 func (i *Image) String() string {
 	alt := ""
-	style := ""
 	if i.Alt != "" {
 		alt = fmt.Sprintf(` alt="%s"`, i.Alt)
-	}
-	if i.Style() != "" {
-		style = fmt.Sprintf(` style="%s"`, i.Style())
 	}
 	areamap := ""
 	if len(i.AreaMap.Areas) > 0 {
 		areamap = fmt.Sprintf(` usemap="#%s_map"`, i.ID())
 	}
-	img := fmt.Sprintf(`<image%s%s width="%d" height="%d" src="%s"%s%s%s>`, i.getName(), i.getID(), i.Width, i.Height, i.URL, alt, style, areamap)
+	img := fmt.Sprintf(`<%s%s%s width="%d" height="%d" src="%s"%s%s%s>`, i.Class(), i.getName(), i.getID(), i.Width, i.Height,
+		i.URL, alt, i.getStyle(), areamap)
 	if len(i.AreaMap.Areas) > 0 {
 		img += fmt.Sprintf("%s", i.AreaMap)
 	}
