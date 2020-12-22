@@ -7,6 +7,15 @@ import (
 	"github.com/zserge/lorca"
 )
 
+// ElementID is the id of an element
+type ElementID string
+
+// ElementName is the name of an element
+type ElementName string
+
+// ElementClass is the class of an element
+type ElementClass string
+
 //BoundEvents is a mapping of events and the bound functions that trigger
 type BoundEvents map[EventType]*Binding
 
@@ -16,7 +25,7 @@ type Element interface {
 	Class() string
 	Name() string
 	Clickable() bool
-	Styles() string
+	Style() string
 	SetStyle(string)
 	Children() *Elements
 	Bindings() *BoundEvents
@@ -27,10 +36,13 @@ type Element interface {
 
 //Base is the common structure that all Elements have
 type Base struct {
-	ID          string
-	Style       string
-	UI          *lorca.UI
-	BoundEvents *BoundEvents
+	ElementID    string
+	ElementName  string
+	ElementClass string
+	ElementStyle string
+	UI           *lorca.UI
+	BoundEvents  *BoundEvents
+	Elements     *Elements
 	Element
 }
 
@@ -48,32 +60,64 @@ func (b *Base) SetText(s string) error {
 	if b.GetUI() == nil {
 		return errors.New("Window not started yet")
 	}
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").innerHTML="%s"`, b.Name(), s))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").innerHTML="%s"`, b.ID(), s))
 	return nil
+}
+
+func (b *Base) getName() string {
+	if b.ElementName == "" {
+		return ""
+	}
+	return fmt.Sprintf(` name="%s"`, b.ElementName)
+}
+func (b *Base) getID() string {
+	if b.ElementID == "" {
+		return ""
+	}
+	return fmt.Sprintf(` id="%s"`, b.ElementID)
+}
+
+func (b *Base) getStyle() string {
+	if b.ElementStyle == "" {
+		return ""
+	}
+	return fmt.Sprintf(` style="%s"`, b.ElementStyle)
+}
+
+func (b *Base) String() string {
+	return fmt.Sprintf(
+		`<%s%s%s%s>%s</%s>`,
+		b.Class(), b.getName(), b.getID(), b.getStyle(), b.Elements, b.Class())
 }
 
 // Value returns the value of an item
 func (b *Base) Value() string {
-	return fmt.Sprintf("%s", (*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value;`, b.Name())))
+	return fmt.Sprintf("%s", (*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value;`, b.ID())))
 }
 
 //Set assigns the value to the item
 func (b *Base) Set(v string) {
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value="%s";`, b.Name(), v))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value="%s";`, b.ID(), v))
 }
 
 //Enable sets the base element disabled property to false
 func (b *Base) Enable() {
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=false`, b.Name()))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=false`, b.ID()))
 }
 
 //Disable sets the base element disabledproperty to true
 func (b *Base) Disable() {
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=true`, b.Name()))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=true`, b.ID()))
 }
 
-//Name return the ID of the Base
-func (b *Base) Name() string { return b.ID }
+//ID return the ID() of the Base
+func (b *Base) ID() string { return b.ElementID }
+
+//Name returns the name of the element
+func (b *Base) Name() string { return b.ElementName }
+
+//Class returns the class of the element
+func (b *Base) Class() string { return b.ElementClass }
 
 //SetUI adds the UI to the Base
 func (b *Base) SetUI(ui *lorca.UI) { b.UI = ui }
@@ -81,11 +125,11 @@ func (b *Base) SetUI(ui *lorca.UI) { b.UI = ui }
 // GetUI returns the UI from the Base
 func (b *Base) GetUI() *lorca.UI { return b.UI }
 
-//Styles returns the object style descriptors
-func (b *Base) Styles() string { return b.Style }
+//Style returns the object style descriptors
+func (b *Base) Style() string { return b.ElementStyle }
 
 //SetStyle will set the style
-func (b *Base) SetStyle(s string) { b.Style = s }
+func (b *Base) SetStyle(s string) { b.ElementStyle = s }
 
 //SetBoundFunction provides a clean way to set the bound function on an event
 func (b *Base) SetBoundFunction(event EventType, f func()) {
@@ -93,7 +137,7 @@ func (b *Base) SetBoundFunction(event EventType, f func()) {
 	if bnd == nil {
 		bnd := &Binding{
 			BoundFunction: f,
-			FunctionName:  fmt.Sprintf("%s_on_%s", b.Name(), event),
+			FunctionName:  fmt.Sprintf("%s_on_%s", b.ID(), event),
 		}
 		(*b.BoundEvents)[event] = bnd
 	} else {
@@ -108,12 +152,15 @@ type Elements struct {
 
 //String for Elements
 func (els *Elements) String() string {
-	if els == nil {
-		return ""
-	}
 	html := ""
-	for _, el := range els.slice {
-		//fmt.Printf(`%d%b%v%c%s%b`, i, 9, el, 9, *el, 10)
+	if els == nil {
+		return html
+	}
+	for i, el := range els.slice {
+		if el == nil {
+			fmt.Printf("Element %d is nil\n", i)
+			return ""
+		}
 		html += fmt.Sprintf(`%s`, *el)
 	}
 	return html
@@ -136,3 +183,6 @@ func (be *BoundEvents) String() string {
 	}
 	return bindings
 }
+
+//Children returns a pointer to the child elements
+func (b *Base) Children() *Elements { return b.Elements }

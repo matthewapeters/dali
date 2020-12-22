@@ -36,7 +36,6 @@ func (b Binding) SetEvent(e EventType) {
 type Window struct {
 	Width, Height int
 	Style         StyleSheet
-	html          string
 	ui            lorca.UI
 	ProfileDir    string
 	Elements      *Elements
@@ -76,6 +75,10 @@ func NewWindow(width, height int, profileDir string, styleSheet string, args ...
 
 //String for Window
 func (w *Window) String() string {
+	if w.Elements == nil {
+		fmt.Println("Elements is nil")
+		return "<html></html>"
+	}
 	return fmt.Sprintf(`<html>%s</html>`, w.Elements)
 
 }

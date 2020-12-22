@@ -1,24 +1,22 @@
 package dali
 
-import "fmt"
-
 //Span element
 type Span struct {
-	Text string
 	Base
 }
 
-//String for span
-func (s *Span) String() string {
-	style := ""
-	if s.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, s.Style)
+// NewSpanElement creates a new Span element
+func NewSpanElement(name, id, text string) *Span {
+	var textElement Element
+	textElement = Text(text)
+	return &Span{
+		Base: Base{
+			ElementName:  name,
+			ElementID:    id,
+			ElementClass: "span",
+			Elements: &Elements{slice: []*Element{
+				&textElement,
+			}},
+		},
 	}
-	return fmt.Sprintf(`<span id="%s"%s>%s</span>`, s.ID, style, s.Text)
 }
-
-//Children returns an empty Elements
-func (s *Span) Children() *Elements { return &Elements{slice: []*Element{}} }
-
-//Class for span
-func (s *Span) Class() string { return "span" }

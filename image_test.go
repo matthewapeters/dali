@@ -6,13 +6,13 @@ import (
 )
 
 func TestImage(t *testing.T) {
-	i := NewImage("TestImageName", 100, 200, "PathToImage")
-	expected := `<image id="TestImageName" width="100" height="200" src="PathToImage">`
+	i := NewImage("TestImageName", "TestImageID", 100, 200, "PathToImage")
+	expected := `<image name="TestImageName" id="TestImageID" width="100" height="200" src="PathToImage">`
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, i)
 	}
 	i.SetStyle(`border:solid 1px #123456`)
-	expected = `<image id="TestImageName" width="100" height="200" src="PathToImage" style="border:solid 1px #123456">`
+	expected = `<image name="TestImageName" id="TestImageID" width="100" height="200" src="PathToImage" style="border:solid 1px #123456">`
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, i)
 	}
@@ -25,7 +25,7 @@ func TestImage(t *testing.T) {
 		fmt.Println(i.AreaMap.Areas)
 	}
 
-	expected = `<image id="TestImageName" width="100" height="200" src="PathToImage" style="border:solid 1px #123456" usemap="#TestImageName_map"><map name="TestImageName_map"><area shape="default" coords="0,0,100,200" onclick="doAltText()" alt="altText"></map>`
+	expected = `<image name="TestImageName" id="TestImageID" width="100" height="200" src="PathToImage" style="border:solid 1px #123456" usemap="#TestImageID_map"><map id="TestImageID_map"><area shape="default" coords="0,0,100,200" onclick="doAltText()" alt="altText"></map>`
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected 
 "%s" 

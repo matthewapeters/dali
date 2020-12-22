@@ -52,7 +52,7 @@ type Area struct {
 
 //Map of regions on an image that are clickable
 type Map struct {
-	Name  string
+	Base
 	Areas []Area
 }
 
@@ -69,7 +69,7 @@ func (a Area) String() string {
 
 //String of Map
 func (m Map) String() string {
-	html := fmt.Sprintf(`<map name="%s">`, m.Name)
+	html := fmt.Sprintf(`<map%s%s>`, m.getName(), m.getID())
 	for _, a := range m.Areas {
 		html = fmt.Sprintf("%s%s", html, a)
 	}
@@ -87,31 +87,33 @@ type Image struct {
 }
 
 // NewImage generates a new Image object
-func NewImage(name string, width, height int, url string) *Image {
+func NewImage(name, id string, width, height int, url string) *Image {
 	return &Image{
-		Base:    Base{ID: name},
+		Base: Base{
+			ElementName:  name,
+			ElementID:    id,
+			ElementClass: "image",
+			ElementStyle: fmt.Sprintf(`width:%d;height:%d;`, width, height),
+		},
 		Width:   width,
 		Height:  height,
 		URL:     url,
-		AreaMap: Map{Name: fmt.Sprintf(`%s_map`, name), Areas: []Area{}},
+		AreaMap: Map{Base: Base{ElementID: fmt.Sprintf(`%s_map`, id)}, Areas: []Area{}},
 	}
 }
 
 //String for image
 func (i *Image) String() string {
 	alt := ""
-	style := ""
 	if i.Alt != "" {
 		alt = fmt.Sprintf(` alt="%s"`, i.Alt)
 	}
-	if i.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, i.Style)
-	}
 	areamap := ""
 	if len(i.AreaMap.Areas) > 0 {
-		areamap = fmt.Sprintf(` usemap="#%s_map"`, i.Name())
+		areamap = fmt.Sprintf(` usemap="#%s_map"`, i.ID())
 	}
-	img := fmt.Sprintf(`<image id="%s" width="%d" height="%d" src="%s"%s%s%s>`, i.ID, i.Width, i.Height, i.URL, alt, style, areamap)
+	img := fmt.Sprintf(`<%s%s%s width="%d" height="%d" src="%s"%s%s%s>`, i.Class(), i.getName(), i.getID(), i.Width, i.Height,
+		i.URL, alt, i.getStyle(), areamap)
 	if len(i.AreaMap.Areas) > 0 {
 		img += fmt.Sprintf("%s", i.AreaMap)
 	}
@@ -172,7 +174,7 @@ func (i *Image) Load(img *image.RGBA) error {
 
 	// this JavaScript will the source content of the img tag
 	// Send the javascript containing the image and the instruction to modify the image
-	(*i.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").src="%s"`, i.Name(), imageDump))
+	(*i.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").src="%s"`, i.ID(), imageDump))
 
 	return nil
 }

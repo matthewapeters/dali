@@ -1,6 +1,10 @@
 package dali
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/zserge/lorca"
+)
 
 //HeadElement provides the Head
 type HeadElement struct {
@@ -45,8 +49,8 @@ func (scr *ScriptElement) String() string {
 		src = fmt.Sprintf(` src="%s"`, scr.URL)
 	}
 	name := ""
-	if scr.ID != "" {
-		name = fmt.Sprintf(` id="%s"`, scr.Name())
+	if scr.ID() != "" {
+		name = fmt.Sprintf(` id="%s"`, scr.ID())
 	}
 	return fmt.Sprintf(`<script type="text/javascript" %s%s>
 	<!--
@@ -54,6 +58,9 @@ func (scr *ScriptElement) String() string {
 	//-->
 	</script>`, src, name, scr.Text)
 }
+
+//Bindings on ScriptElement returns an empty BoundEvents
+func (scr *ScriptElement) Bindings() *BoundEvents { return &BoundEvents{} }
 
 //Children returns an empty Elements
 func (scr *ScriptElement) Children() *Elements { return &Elements{slice: []*Element{}} }
@@ -63,6 +70,21 @@ func (scr *ScriptElement) Class() string { return "script" }
 
 // Style of script
 func (scr *ScriptElement) Style() string { return "" }
+
+// GetUI gets the lorca.UI
+func (scr *ScriptElement) GetUI() *lorca.UI { return scr.UI }
+
+// SetUI sets the lorca.UI
+func (scr *ScriptElement) SetUI(u *lorca.UI) { scr.UI = u }
+
+// Name returns the name of the script element
+func (scr *ScriptElement) Name() string { return scr.ElementName }
+
+//SetStyle is noop on Script Element
+func (scr *ScriptElement) SetStyle(s string) {}
+
+//Value returns empty string on Script Element
+func (scr *ScriptElement) Value() string { return "" }
 
 //TitleElement for createing window titles
 type TitleElement struct {
@@ -92,8 +114,8 @@ type BodyElement struct {
 
 func (b *BodyElement) String() string {
 	style := ""
-	if b.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, b.Style)
+	if b.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, b.Style())
 	}
 	return fmt.Sprintf(`<body%s%s>%s</body>`, b.BoundEvents, style, b.Elements)
 }
@@ -107,12 +129,14 @@ func NewBodyElement(onLoad string) *BodyElement {
 	var bindings BoundEvents
 	if onLoad != "" {
 		bindings = BoundEvents{LoadEvent: &Binding{FunctionName: "body_on_load"}}
+	} else {
+		bindings = BoundEvents{}
 	}
 
 	return &BodyElement{
 		Elements: &els,
 		Base: Base{
-			ID:          "BODY",
+			ElementID:   "BODY",
 			BoundEvents: &bindings,
 		},
 	}

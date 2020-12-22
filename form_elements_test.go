@@ -3,7 +3,7 @@ package dali
 import "testing"
 
 func TestSelectElement(t *testing.T) {
-	se := NewSelectElement("testElement", "do_testElement")
+	se := NewSelectElement("testElement", "testElement", "do_testElement")
 	se.AddOption("Label One", "1")
 	se.AddOption("Label Two", "2")
 	se.AddOption("Label Three", "3")

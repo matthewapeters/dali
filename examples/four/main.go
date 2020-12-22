@@ -14,11 +14,11 @@ func main() {
 
 	b := dali.NewBodyElement("")
 
-	v := dali.NewVideoElement("vid", 900, 700)
-	v.Style = `display:inline-block;width:900px;height:700px;boder:solid 1px #338811`
-	start := dali.NewButton("Start Video", "startButton", "startTracks")
+	v := dali.NewVideoElement("vid", "vid", 900, 700)
+	v.SetStyle(`display:inline-block;width:900px;height:700px;boder:solid 1px #338811`)
+	start := dali.NewButton("Start Video", "startButton", "startButton", "startTracks")
 	start.BindFunction(dali.ClickEvent, "startTracks", func() { _ = v.StartTracks() })
-	stop := dali.NewButton("Stop Video", "stopButton", "stopTracks")
+	stop := dali.NewButton("Stop Video", "stopButton", "stopButton", "stopTracks")
 	stop.BindFunction(dali.ClickEvent, "stopTracks", func() { _ = v.StopTracks() })
 
 	b.Elements.AddElement(v)

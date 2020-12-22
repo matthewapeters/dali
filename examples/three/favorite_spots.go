@@ -66,10 +66,9 @@ func (favs *Favorites) Save() error {
 func NewFavorites() (*Favorites, error) {
 	var err error
 	favs := &Favorites{
-		SelectElement: dali.NewSelectElement("favorites", "pick_favorite_spot"),
+		SelectElement: dali.NewSelectElement("favorites", "favorites", "pick_favorite_spot"),
 		FavoriteSpots: map[string]FavoriteSpot{},
 	}
-
 
 	f, err := os.Open("favorites.json")
 	if err != nil {
@@ -122,7 +121,8 @@ func (favs *Favorites) AddFavoriteSpot(name string, focalPointReal, focalPointIm
 	zl, _ := strconv.ParseFloat(zoomLevel.Value(), 64)
 	newFav := FavoriteSpot{
 		Base: dali.Base{
-			ID: name,
+			ElementID:   name,
+			ElementName: name,
 		},
 		FavoriteView: FavoriteView{
 			FocalPointReal:      fpr,
@@ -135,7 +135,7 @@ func (favs *Favorites) AddFavoriteSpot(name string, focalPointReal, focalPointIm
 	//fmt.Printf("%s", &newFav)
 	favs.FavoriteSpots[name] = newFav
 	(*favs.GetUI()).Eval(fmt.Sprintf(` document.getElementById("%s").options.add(new Option("%s","%s"));`,
-		favs.Name(),
+		favs.ID(),
 		strings.ReplaceAll(name, "_", " "),
 		name))
 	favs.Save()
