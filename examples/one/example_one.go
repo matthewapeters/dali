@@ -44,12 +44,12 @@ func main() {
 	Body.SetStyle("background:#5080FF;")
 
 	/*Add an H1 banner named pageBanner to the GUI*/
-	Banner := dali.NewHeader(dali.H1, "pageBanner", "This is Example One")
+	Banner := dali.NewHeader(dali.H1, "pageBanner", "pageBanner", "This is Example One")
 	Body.Elements.AddElement(Banner)
 	Body.Elements.AddElement(dali.LineBreak())
 
 	/*Add some exposition*/
-	ScrollableDiv := dali.NewDiv("")
+	ScrollableDiv := dali.NewDiv("", "")
 	ScrollableDiv.SetStyle("overflow-y:scroll;height:100;border:solid 1px #000011;padding:3")
 	blahBlah := dali.Text(IpsumLorem())
 	ScrollableDiv.Elements.AddElement(blahBlah)
@@ -57,12 +57,14 @@ func main() {
 	Body.Elements.AddElement(dali.LineBreak())
 
 	/*Demonstate Promise bindings by having a button trigger a random number selection*/
-	nbr := dali.Span{Base: dali.Base{ID: "randomNumber", Style: "width: 100%;padding:5;"}, Text: "Click button to pick a random number..."}
-	picker := dali.NewButton("Pick A Number:", "picker", "do_pick_a_number_server_side")
+	nbr := dali.NewSpanElement("randomNumber", "randomNumber", "Click button to pick a random number...")
+	nbr.SetStyle("width: 100%;padding:5;")
+
+	picker := dali.NewButton("Pick A Number:", "picker", "picker", "do_pick_a_number_server_side")
 	(*picker.Base.BoundEvents)[dali.ClickEvent].BoundFunction = func() { PickARandomNumber(Window) }
-	pickerDiv := dali.NewDiv("pickerDiv")
+	pickerDiv := dali.NewDiv("pickerDiv", "pickerDiv")
 	pickerDiv.Elements.AddElement(picker)
-	pickerDiv.Elements.AddElement(&nbr)
+	pickerDiv.Elements.AddElement(nbr)
 	Body.Elements.AddElement(pickerDiv)
 
 	Window.Elements.AddElement(Body)

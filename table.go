@@ -17,10 +17,10 @@ func (hd *Heading) Children() *Elements { return &Elements{} }
 
 func (hd *Heading) String() string {
 	style := ""
-	if hd.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, hd.Style)
+	if hd.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, hd.Style())
 	}
-	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.ID()(), style, hd.BoundEvents, hd.Text)
+	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.ID(), style, hd.BoundEvents, hd.Text)
 }
 
 //Headings is the collection of headings
@@ -43,8 +43,8 @@ type Cell struct {
 
 func (cell *Cell) String() string {
 	style := ""
-	if cell.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, cell.Style)
+	if cell.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, cell.Style())
 	}
 	return fmt.Sprintf(`<td%s>%s</td>`, style, cell.Elements)
 }
@@ -75,8 +75,8 @@ func (hr *HeadingRow) String() string {
 		return ""
 	}
 	style := ""
-	if hr.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, hr.Style)
+	if hr.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, hr.Style())
 	}
 	return fmt.Sprintf(`%c%c<tr%s>%s%c</tr>`, 10, 9, style, hr.Headings, 9)
 }
@@ -89,8 +89,8 @@ type Row struct {
 
 func (row *Row) String() string {
 	style := ""
-	if row.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, row.Style)
+	if row.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, row.Style())
 	}
 	return fmt.Sprintf(`%c%c<tr%s>%s%c</tr>`, 10, 9, style, row.Cells, 9)
 }
@@ -117,8 +117,8 @@ func (th *THead) String() string {
 		return ""
 	}
 	style := ""
-	if th.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, th.Style)
+	if th.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, th.Style())
 	}
 	return fmt.Sprintf(`%c<thead%s>%s%c</thead>`, 10, style, th.HeadingRow, 10)
 }
@@ -131,8 +131,8 @@ type TBody struct {
 
 func (tb *TBody) String() string {
 	style := ""
-	if tb.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, tb.Style)
+	if tb.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, tb.Style())
 	}
 	return fmt.Sprintf(`%c<tbody%s>%s%c</tbody>`, 10, style, tb.Rows, 10)
 }
@@ -148,15 +148,11 @@ type Table struct {
 }
 
 func (tab *Table) String() string {
-	style := ""
-	if tab.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, tab.Style)
-	}
-	return fmt.Sprintf(`<table id="%s"%s>%s%s%c</table>`, tab.ID()(), style, tab.THead, tab.TBody, 10)
+	return fmt.Sprintf(`<table%s%s%s>%s%s%c</table>`, tab.getName(), tab.getID(), tab.getStyle(), tab.THead, tab.TBody, 10)
 }
 
 // NewTableElement creates a new Table element
-func NewTableElement(name string, columns, rows int, headings []string) *Table {
+func NewTableElement(name, id string, columns, rows int, headings []string) *Table {
 	tableRows := []*Row{}
 	headingRow := HeadingRow{Headings: Headings{}}
 
@@ -164,7 +160,7 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 		ColumnCount: columns,
 		RowCount:    rows,
 		Base: Base{
-			ID: name,
+			ElementID: id, ElementName: name,
 		},
 		THead:    &THead{HeadingRow: &headingRow},
 		TBody:    &TBody{Rows: tableRows},
@@ -174,7 +170,8 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 	for i, h := range headings {
 		h := Heading{
 			Base: Base{
-				ID:          fmt.Sprintf(`heading_%d`, i),
+				ElementName: fmt.Sprintf(`heading_%d`, i),
+				ElementID:   fmt.Sprintf(`heading_%d`, i),
 				BoundEvents: &BoundEvents{},
 			},
 			Text: h,
@@ -188,7 +185,10 @@ func NewTableElement(name string, columns, rows int, headings []string) *Table {
 		row.Cells = Cells{}
 		for colNum := 0; colNum < columns; colNum++ {
 			c := Cell{
-				Base:     Base{ID: fmt.Sprintf(`%s_%d_%d`, name, rowNum, colNum)},
+				Base: Base{
+					ElementID:   fmt.Sprintf(`%s_%d_%d`, name, rowNum, colNum),
+					ElementName: fmt.Sprintf(`%s_%d_%d`, name, rowNum, colNum),
+				},
 				Elements: &Elements{slice: []*Element{}},
 			}
 			row.Cells = append(row.Cells, &c)

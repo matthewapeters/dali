@@ -45,8 +45,8 @@ func (scr *ScriptElement) String() string {
 		src = fmt.Sprintf(` src="%s"`, scr.URL)
 	}
 	name := ""
-	if scr.ID != "" {
-		name = fmt.Sprintf(` id="%s"`, scr.ID()())
+	if scr.ID() != "" {
+		name = fmt.Sprintf(` id="%s"`, scr.ID())
 	}
 	return fmt.Sprintf(`<script type="text/javascript" %s%s>
 	<!--
@@ -92,8 +92,8 @@ type BodyElement struct {
 
 func (b *BodyElement) String() string {
 	style := ""
-	if b.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, b.Style)
+	if b.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, b.Style())
 	}
 	return fmt.Sprintf(`<body%s%s>%s</body>`, b.BoundEvents, style, b.Elements)
 }
@@ -107,12 +107,14 @@ func NewBodyElement(onLoad string) *BodyElement {
 	var bindings BoundEvents
 	if onLoad != "" {
 		bindings = BoundEvents{LoadEvent: &Binding{FunctionName: "body_on_load"}}
+	} else {
+		bindings = BoundEvents{}
 	}
 
 	return &BodyElement{
 		Elements: &els,
 		Base: Base{
-			ID:          "BODY",
+			ElementID:   "BODY",
 			BoundEvents: &bindings,
 		},
 	}

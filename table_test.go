@@ -7,8 +7,8 @@ import (
 )
 
 func TestTable(t *testing.T) {
-	tab := NewTableElement("testTable", 1, 1, []string{})
-	expected := `<table id="testTable">
+	tab := NewTableElement("testTable", "testTable", 1, 1, []string{})
+	expected := `<table name="testTable" id="testTable">
 <tbody>
 	<tr>
 		<td></td>
@@ -26,8 +26,8 @@ but got:
 		}
 	}
 
-	tab = NewTableElement("testTable", 2, 5, []string{})
-	expected = `<table id="testTable">
+	tab = NewTableElement("testTable", "testTable", 2, 5, []string{})
+	expected = `<table name="testTable" id="testTable">
 <tbody>
 	<tr>
 		<td></td>
@@ -62,15 +62,15 @@ but got:
 		}
 	}
 
-	tab = NewTableElement("cellTest", 2, 2, []string{})
+	tab = NewTableElement("cellTest", "cellTest", 2, 2, []string{})
 	var b, b2 Element
-	b = NewButton("0,0", "button1", "doButton1")
-	b2 = NewButton("1,1", "button2", "doButton2")
+	b = NewButton("0,0", "button1", "button1", "doButton1")
+	b2 = NewButton("1,1", "button2", "button2", "doButton2")
 
 	tab.AddCellElement(0, 0, &b)
 	tab.AddCellElement(1, 1, &b2)
 
-	expected = `<table id="cellTest">
+	expected = `<table name="cellTest" id="cellTest">
 <tbody>
 	<tr>
 		<td><button id="button1" onclick="doButton1()">0,0</button></td>

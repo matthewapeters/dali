@@ -18,11 +18,13 @@ type Canvas struct {
 }
 
 //NewCanvas creates a new Canvas
-func NewCanvas(name string, width, height int) *Canvas {
+func NewCanvas(name, id string, width, height int) *Canvas {
 	return &Canvas{
 		Width:  width,
 		Height: height,
-		Base: Base{ID: name,
+		Base: Base{
+			ElementID:   id,
+			ElementName: name,
 			BoundEvents: &BoundEvents{}},
 		Elements: &Elements{},
 	}
@@ -33,10 +35,10 @@ func (c *Canvas) Children() *Elements { return c.Elements }
 
 func (c *Canvas) String() string {
 	style := ""
-	if c.Base.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, c.Style)
+	if c.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, c.Style())
 	}
-	return fmt.Sprintf(`<canvas id="%s" width="%dpx" height="%dpx"%s>%s</canvas>`, c.ID, c.Width, c.Height, style, c.Elements)
+	return fmt.Sprintf(`<canvas id="%s" width="%dpx" height="%dpx"%s>%s</canvas>`, c.ID(), c.Width, c.Height, style, c.Elements)
 }
 
 // Class of the canvas
@@ -67,7 +69,7 @@ func (c *Canvas) DrawImage(img *image.RGBA, x, y int) error {
 	img.onload=function(){ document.getElementById("%s").getContext("2d").drawImage(img,%d,%d); };
 	img.src = "%s";
 	`,
-		c.ID()(), x, y, imageDump)
+		c.ID(), x, y, imageDump)
 
 	(*c.GetUI()).Eval(scriptlet)
 	return nil

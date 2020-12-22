@@ -5,16 +5,15 @@ import "fmt"
 //Button type
 type Button struct {
 	ButtonText string
-	Style      string
 	Base
 }
 
 func (b *Button) String() string {
 	style := ""
-	if b.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, b.Style)
+	if b.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, b.Style())
 	}
-	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.ID()(), b.BoundEvents, style, b.ButtonText)
+	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.ID(), b.BoundEvents, style, b.ButtonText)
 }
 
 // Children will return an empty Elements
@@ -31,10 +30,12 @@ func (b *Button) Clickable() bool {
 }
 
 //NewButton creates a new button
-func NewButton(label, name, funcName string) *Button {
+func NewButton(label, name, id, funcName string) *Button {
 
 	return &Button{
-		Base: Base{ID: name,
+		Base: Base{
+			ElementID:   id,
+			ElementName: name,
 			BoundEvents: &BoundEvents{
 				ClickEvent: &Binding{FunctionName: funcName},
 			},

@@ -16,12 +16,12 @@ type ProgressElement struct {
 }
 
 //NewProgressElement creates a new progress bar
-func NewProgressElement(name string, max float64) *ProgressElement {
+func NewProgressElement(name, id string, max float64) *ProgressElement {
 
 	c := make(chan float64, int(max))
 
 	return &ProgressElement{
-		Base:            Base{ID: name},
+		Base:            Base{ElementName: name, ElementID: id},
 		Max:             max,
 		CurrentValue:    0,
 		Mu:              sync.Mutex{},
@@ -36,16 +36,16 @@ func (p *ProgressElement) Children() *Elements {
 
 //Value returs the current value of the ProgressElement (as found in the DOM)
 func (p *ProgressElement) Value() string {
-	return fmt.Sprintf(`%s`, (*p.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value`, p.ID()())))
+	return fmt.Sprintf(`%s`, (*p.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value`, p.ID())))
 }
 
 func (p *ProgressElement) String() string {
 	go p.monitorProgressChannel()
 	style := ""
-	if p.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, p.Style)
+	if p.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, p.Style())
 	}
-	return fmt.Sprintf(`<progress id="%s" value="%f" max="%f"%s></progress>`, p.ID()(), p.CurrentValue, p.Max, style)
+	return fmt.Sprintf(`<progress id="%s" value="%f" max="%f"%s></progress>`, p.ID(), p.CurrentValue, p.Max, style)
 }
 
 // monitors a progress channel.  If the channel is closed, returns.

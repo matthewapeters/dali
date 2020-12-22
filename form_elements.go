@@ -68,19 +68,21 @@ type InputElement struct {
 func (tf *InputElement) String() string {
 	style := ""
 	defaultValue := ""
-	if tf.Style != "" {
-		style = fmt.Sprintf(` style="%s"`, tf.Style)
+	if tf.Style() != "" {
+		style = fmt.Sprintf(` style="%s"`, tf.Style())
 	}
 	if tf.Text != "" {
 		defaultValue = fmt.Sprintf(` value="%s"`, tf.Text)
 	}
-	return fmt.Sprintf(`<input type="%s" id="%s"%s%s%s>`, tf.InputType, tf.ID()(), defaultValue, style, tf.BoundEvents)
+	return fmt.Sprintf(`<input type="%s" id="%s"%s%s%s>`, tf.InputType, tf.ID(), defaultValue, style, tf.BoundEvents)
 }
 
 // NewInputElement creates an input element
-func NewInputElement(name string, inputType InputType) *InputElement {
+func NewInputElement(name, id string, inputType InputType) *InputElement {
 	return &InputElement{
-		Base: Base{ID: name,
+		Base: Base{
+			ElementID:   id,
+			ElementName: name,
 			BoundEvents: &BoundEvents{
 				EventType(OnChange): &Binding{},
 			},
@@ -120,11 +122,12 @@ type SelectElement struct {
 }
 
 //NewSelectElement creates a new select element
-func NewSelectElement(name, functionName string) *SelectElement {
+func NewSelectElement(name, id, functionName string) *SelectElement {
 	os := OptionSlice([]*OptionElement{})
 	return &SelectElement{
 		Base: Base{
-			ID: name,
+			ElementID:   id,
+			ElementName: name,
 			BoundEvents: &BoundEvents{
 				ChangeEvent: &Binding{FunctionName: functionName},
 			},
@@ -147,7 +150,7 @@ func (se *SelectElement) String() string {
 			binding += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
 		}
 	}
-	return fmt.Sprintf(`<select id="%s"%s>%s</select>`, se.ID()(), binding, se.Options)
+	return fmt.Sprintf(`<select id="%s"%s>%s</select>`, se.ID(), binding, se.Options)
 }
 
 //Children returns an empty list

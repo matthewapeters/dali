@@ -1,6 +1,10 @@
 package dali
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/zserge/lorca"
+)
 
 // HeaderLevel enums header sizes
 type HeaderLevel int
@@ -44,33 +48,32 @@ func (br *BR) Style() string { return br.StyleName }
 
 //Header is a header
 type Header struct {
-	StyleName string
-	ID        string
-	Level     HeaderLevel
-	Text      string
+	Level HeaderLevel
+	Text  string
 	Element
+	Base
 }
 
 func (h *Header) String() string {
-	style := ""
-	name := ""
-	if h.StyleName != "" {
-		style = fmt.Sprintf(` style:"%s"`, h.StyleName)
-	}
-	if h.ID != "" {
-		name = fmt.Sprintf(` id="%s"`, h.ID()())
-	}
-	return fmt.Sprintf(`<H%d %s%s>%s</H%d>`, h.Level, name, style, h.Text, h.Level)
+	return fmt.Sprintf(`<H%d %s%s%s>%s</H%d>`, h.Level, h.getName(), h.getID(), h.getStyle(), h.Text, h.Level)
 }
 
 //NewHeader produces a new header element
-func NewHeader(level HeaderLevel, name, text string) *Header {
+func NewHeader(level HeaderLevel, name, id, text string) *Header {
 	return &Header{
-		Text:  text,
-		ID:    name,
+		Text: text,
+		Base: Base{
+			ElementID:   id,
+			ElementName: name},
 		Level: level,
 	}
 }
+
+//Value returns the base value
+func (h *Header) Value() string { return h.Base.Value() }
+
+//Bindings returns bound functions
+func (h *Header) Bindings() *BoundEvents { return &BoundEvents{} }
 
 //Children will return an empty Elements
 func (h *Header) Children() *Elements {
@@ -84,5 +87,21 @@ func (h *Header) Class() string {
 
 //Style returns the style of the Header
 func (h *Header) Style() string {
-	return fmt.Sprintf(` style="%s"`, h.StyleName)
+	return h.getStyle()
 }
+
+// GetUI will return the lorca.UI
+func (h *Header) GetUI() *lorca.UI {
+	return h.Base.GetUI()
+}
+
+// SetUI will set the lorca.UI
+func (h *Header) SetUI(u *lorca.UI) {
+	h.Base.SetUI(u)
+}
+
+//Name returns the base element name
+func (h *Header) Name() string { return h.Base.Name() }
+
+//SetStyle sets the base style
+func (h *Header) SetStyle(s string) { h.Base.ElementStyle = s }

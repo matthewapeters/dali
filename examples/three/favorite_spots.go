@@ -70,7 +70,6 @@ func NewFavorites() (*Favorites, error) {
 		FavoriteSpots: map[string]FavoriteSpot{},
 	}
 
-
 	f, err := os.Open("favorites.json")
 	if err != nil {
 		fmt.Println(err)
@@ -135,7 +134,7 @@ func (favs *Favorites) AddFavoriteSpot(name string, focalPointReal, focalPointIm
 	//fmt.Printf("%s", &newFav)
 	favs.FavoriteSpots[name] = newFav
 	(*favs.GetUI()).Eval(fmt.Sprintf(` document.getElementById("%s").options.add(new Option("%s","%s"));`,
-		favs.ID()(),
+		favs.ID,
 		strings.ReplaceAll(name, "_", " "),
 		name))
 	favs.Save()

@@ -13,17 +13,17 @@ type Video struct {
 }
 
 // NewVideoElement creates a new Video element
-func NewVideoElement(name string, width, height int) *Video {
+func NewVideoElement(name, id string, width, height int) *Video {
 	return &Video{
-		Base: Base{ID: name}, Elements: &Elements{}, Width: width, Height: height}
+		Base: Base{ElementID: id, ElementName: name}, Elements: &Elements{}, Width: width, Height: height}
 }
 
 func (v *Video) String() string {
 	style := ""
-	if v.Style == "" {
+	if v.Style() == "" {
 		style = fmt.Sprintf(` style=width: %d px; height: %dpx;`, v.Width, v.Height)
 	} else {
-		style = fmt.Sprintf(` style="%s;width: %d px; height: %dpx;"`, v.Style, v.Width, v.Height)
+		style = fmt.Sprintf(` style="%s;width: %d px; height: %dpx;"`, v.Style(), v.Width, v.Height)
 	}
 
 	return fmt.Sprintf(`<video id="%s" autoplay %s>
@@ -49,7 +49,7 @@ func (v *Video) String() string {
 			s.getTracks()[1].stop();
 		}
 	--></script>
-	</video>`, v.ID()(), style, v.Width, v.Height, v.ID()(), v.ID()(), v.ID()())
+	</video>`, v.ID(), style, v.Width, v.Height, v.ID(), v.ID(), v.ID())
 }
 
 // Children returns the child elements
@@ -58,7 +58,7 @@ func (v *Video) Children() *Elements { return v.Elements }
 //StartTracks will start the camera and audio streams
 func (v *Video) StartTracks() error {
 	var err error
-	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_startTracks();`, v.ID()()))
+	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_startTracks();`, v.ID()))
 	if e != nil {
 		err = fmt.Errorf(fmt.Sprintf(`%s`, e))
 	}
@@ -71,7 +71,7 @@ func (v *Video) StopTracks() error {
 		return errors.New("Window is not yet started")
 	}
 	var err error
-	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_stopTracks(); `, v.ID()()))
+	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_stopTracks(); `, v.ID()))
 	if e != nil {
 		err = fmt.Errorf(fmt.Sprintf(`%s`, e))
 	}

@@ -49,7 +49,7 @@ func (fs *fs) Close() error { return nil }
 func (fs *fs) Read(p []byte) (int, error) { return 0, nil }
 func (fs *fs) Seek(offset int64, whence int) (int64, error) { return 0, nil }
 func (fs *fs) Stat() (os.FileInfo, error) { return fs, nil }
-func (fs *fs) ID()() string { return "/" }
+func (fs *fs) Name() string { return "/" }
 func (fs *fs) Size() int64 { return 0 }
 func (fs *fs) Mode() os.FileMode { return 0755}
 func (fs *fs) ModTime() time.Time{ return time.Time{} }
@@ -72,7 +72,7 @@ type file struct {
 func (f *file) Close() error { return nil }
 func (f *file) Readdir(count int) ([]os.FileInfo, error) { return nil, errors.New("not supported") }
 func (f *file) Stat() (os.FileInfo, error) { return f, nil }
-func (f *file) ID()() string { return f.name }
+func (f *file) Name() string { return f.name }
 func (f *file) Size() int64 { return int64(f.size) }
 func (f *file) Mode() os.FileMode { return 0644 }
 func (f *file) ModTime() time.Time{ return time.Time{} }
