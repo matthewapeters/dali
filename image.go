@@ -69,7 +69,7 @@ func (a Area) String() string {
 
 //String of Map
 func (m Map) String() string {
-	html := fmt.Sprintf(`<map name="%s">`, m.Name)
+	html := fmt.Sprintf(`<map name="%s">`, m.ID())
 	for _, a := range m.Areas {
 		html = fmt.Sprintf("%s%s", html, a)
 	}
@@ -109,7 +109,7 @@ func (i *Image) String() string {
 	}
 	areamap := ""
 	if len(i.AreaMap.Areas) > 0 {
-		areamap = fmt.Sprintf(` usemap="#%s_map"`, i.Name())
+		areamap = fmt.Sprintf(` usemap="#%s_map"`, i.ID()())
 	}
 	img := fmt.Sprintf(`<image id="%s" width="%d" height="%d" src="%s"%s%s%s>`, i.ID, i.Width, i.Height, i.URL, alt, style, areamap)
 	if len(i.AreaMap.Areas) > 0 {
@@ -172,7 +172,7 @@ func (i *Image) Load(img *image.RGBA) error {
 
 	// this JavaScript will the source content of the img tag
 	// Send the javascript containing the image and the instruction to modify the image
-	(*i.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").src="%s"`, i.Name(), imageDump))
+	(*i.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").src="%s"`, i.ID()(), imageDump))
 
 	return nil
 }

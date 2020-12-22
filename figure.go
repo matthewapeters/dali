@@ -22,7 +22,7 @@ type FigureCaption struct {
 }
 
 func (fc *FigureCaption) String() string {
-	return fmt.Sprintf(`<figcaption id="%s"%s>%s</figcaption>`, fc.Name(), fc.BoundEvents, fc.Span)
+	return fmt.Sprintf(`<figcaption id="%s"%s>%s</figcaption>`, fc.ID()(), fc.BoundEvents, fc.Span)
 }
 
 // Figure is a potentially captioned element, commonly holding images and other content
@@ -58,9 +58,9 @@ func (fig *Figure) Children() *Elements { return fig.Elements }
 func (fig *Figure) String() string {
 	switch fig.FigureCaption.CaptionType {
 	case BeforeCaption:
-		return fmt.Sprintf(`<figure id="%s">%s%s</figure>`, fig.Name(), fig.FigureCaption, fig.Elements)
+		return fmt.Sprintf(`<figure id="%s">%s%s</figure>`, fig.ID()(), fig.FigureCaption, fig.Elements)
 	case AfterCaption:
-		return fmt.Sprintf(`<figure id="%s">%s%s</figure>`, fig.Name(), fig.Elements, fig.FigureCaption)
+		return fmt.Sprintf(`<figure id="%s">%s%s</figure>`, fig.ID()(), fig.Elements, fig.FigureCaption)
 	}
-	return fmt.Sprintf(`<figure id="%s">%s</figure>`, fig.Name(), fig.Elements)
+	return fmt.Sprintf(`<figure id="%s">%s</figure>`, fig.ID()(), fig.Elements)
 }

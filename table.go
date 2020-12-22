@@ -20,7 +20,7 @@ func (hd *Heading) String() string {
 	if hd.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, hd.Style)
 	}
-	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.Name(), style, hd.BoundEvents, hd.Text)
+	return fmt.Sprintf(`<th id="%s"%s%s>%s</th>`, hd.ID()(), style, hd.BoundEvents, hd.Text)
 }
 
 //Headings is the collection of headings
@@ -152,7 +152,7 @@ func (tab *Table) String() string {
 	if tab.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, tab.Style)
 	}
-	return fmt.Sprintf(`<table id="%s"%s>%s%s%c</table>`, tab.Name(), style, tab.THead, tab.TBody, 10)
+	return fmt.Sprintf(`<table id="%s"%s>%s%s%c</table>`, tab.ID()(), style, tab.THead, tab.TBody, 10)
 }
 
 // NewTableElement creates a new Table element

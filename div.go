@@ -18,7 +18,7 @@ func (p *Div) String() string {
 		style = fmt.Sprintf(` style="%s"`, p.Base.Style)
 	}
 
-	return fmt.Sprintf(`<div id="%s"%s>%s</div>`, p.Name(), style, p.Elements)
+	return fmt.Sprintf(`<div id="%s"%s>%s</div>`, p.ID()(), style, p.Elements)
 }
 
 // NewDiv generates a new Div

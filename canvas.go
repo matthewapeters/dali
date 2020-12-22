@@ -67,7 +67,7 @@ func (c *Canvas) DrawImage(img *image.RGBA, x, y int) error {
 	img.onload=function(){ document.getElementById("%s").getContext("2d").drawImage(img,%d,%d); };
 	img.src = "%s";
 	`,
-		c.Name(), x, y, imageDump)
+		c.ID()(), x, y, imageDump)
 
 	(*c.GetUI()).Eval(scriptlet)
 	return nil

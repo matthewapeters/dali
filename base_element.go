@@ -48,32 +48,32 @@ func (b *Base) SetText(s string) error {
 	if b.GetUI() == nil {
 		return errors.New("Window not started yet")
 	}
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").innerHTML="%s"`, b.Name(), s))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").innerHTML="%s"`, b.ID()(), s))
 	return nil
 }
 
 // Value returns the value of an item
 func (b *Base) Value() string {
-	return fmt.Sprintf("%s", (*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value;`, b.Name())))
+	return fmt.Sprintf("%s", (*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value;`, b.ID()())))
 }
 
 //Set assigns the value to the item
 func (b *Base) Set(v string) {
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value="%s";`, b.Name(), v))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value="%s";`, b.ID()(), v))
 }
 
 //Enable sets the base element disabled property to false
 func (b *Base) Enable() {
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=false`, b.Name()))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=false`, b.ID()()))
 }
 
 //Disable sets the base element disabledproperty to true
 func (b *Base) Disable() {
-	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=true`, b.Name()))
+	(*b.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").disabled=true`, b.ID()()))
 }
 
 //Name return the ID of the Base
-func (b *Base) Name() string { return b.ID }
+func (b *Base) ID()() string { return b.ID }
 
 //SetUI adds the UI to the Base
 func (b *Base) SetUI(ui *lorca.UI) { b.UI = ui }
@@ -93,7 +93,7 @@ func (b *Base) SetBoundFunction(event EventType, f func()) {
 	if bnd == nil {
 		bnd := &Binding{
 			BoundFunction: f,
-			FunctionName:  fmt.Sprintf("%s_on_%s", b.Name(), event),
+			FunctionName:  fmt.Sprintf("%s_on_%s", b.ID()(), event),
 		}
 		(*b.BoundEvents)[event] = bnd
 	} else {

@@ -58,7 +58,7 @@ func (h *Header) String() string {
 		style = fmt.Sprintf(` style:"%s"`, h.StyleName)
 	}
 	if h.ID != "" {
-		name = fmt.Sprintf(` id="%s"`, h.Name())
+		name = fmt.Sprintf(` id="%s"`, h.ID()())
 	}
 	return fmt.Sprintf(`<H%d %s%s>%s</H%d>`, h.Level, name, style, h.Text, h.Level)
 }

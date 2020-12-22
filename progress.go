@@ -36,7 +36,7 @@ func (p *ProgressElement) Children() *Elements {
 
 //Value returs the current value of the ProgressElement (as found in the DOM)
 func (p *ProgressElement) Value() string {
-	return fmt.Sprintf(`%s`, (*p.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value`, p.Name())))
+	return fmt.Sprintf(`%s`, (*p.GetUI()).Eval(fmt.Sprintf(`document.getElementById("%s").value`, p.ID()())))
 }
 
 func (p *ProgressElement) String() string {
@@ -45,7 +45,7 @@ func (p *ProgressElement) String() string {
 	if p.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, p.Style)
 	}
-	return fmt.Sprintf(`<progress id="%s" value="%f" max="%f"%s></progress>`, p.Name(), p.CurrentValue, p.Max, style)
+	return fmt.Sprintf(`<progress id="%s" value="%f" max="%f"%s></progress>`, p.ID()(), p.CurrentValue, p.Max, style)
 }
 
 // monitors a progress channel.  If the channel is closed, returns.

@@ -15,7 +15,7 @@ Go is much more readable than R and C++.  It is much more peformant than Python.
 
 My hope is that Dali will help reduce the learning curve for Go, and pave the way to making Go teachable and usable within the context of interdisceplnary data sciance classrooms and laboratories.
 
-## What is In A Name? ##
+## What is In A ID()? ##
 Dali, well known as a surrealist artist, was intimate friends with the poet, Lorca.  The [lorca](http://github.com/zserge/lorca) project explains its name, but you can learn more about the men [here](https://art-sheep.com/federico-garcia-lorca-and-salvador-dali-a-pure-friendship-or-a-great-romantic-affair/).
 
 ## License ##

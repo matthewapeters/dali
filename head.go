@@ -46,7 +46,7 @@ func (scr *ScriptElement) String() string {
 	}
 	name := ""
 	if scr.ID != "" {
-		name = fmt.Sprintf(` id="%s"`, scr.Name())
+		name = fmt.Sprintf(` id="%s"`, scr.ID()())
 	}
 	return fmt.Sprintf(`<script type="text/javascript" %s%s>
 	<!--

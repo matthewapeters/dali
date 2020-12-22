@@ -14,7 +14,7 @@ func (b *Button) String() string {
 	if b.Style != "" {
 		style = fmt.Sprintf(` style="%s"`, b.Style)
 	}
-	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.Name(), b.BoundEvents, style, b.ButtonText)
+	return fmt.Sprintf(`<button id="%s"%s%s>%s</button>`, b.ID()(), b.BoundEvents, style, b.ButtonText)
 }
 
 // Children will return an empty Elements

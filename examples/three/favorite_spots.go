@@ -135,7 +135,7 @@ func (favs *Favorites) AddFavoriteSpot(name string, focalPointReal, focalPointIm
 	//fmt.Printf("%s", &newFav)
 	favs.FavoriteSpots[name] = newFav
 	(*favs.GetUI()).Eval(fmt.Sprintf(` document.getElementById("%s").options.add(new Option("%s","%s"));`,
-		favs.Name(),
+		favs.ID()(),
 		strings.ReplaceAll(name, "_", " "),
 		name))
 	favs.Save()

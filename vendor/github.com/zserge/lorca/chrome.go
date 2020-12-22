@@ -280,7 +280,7 @@ func (c *chrome) readLoop() {
 				json.Unmarshal([]byte(res.Params.Payload), &payload)
 
 				c.Lock()
-				binding, ok := c.bindings[res.Params.Name]
+				binding, ok := c.bindings[res.Params.ID()]
 				c.Unlock()
 				if ok {
 					jsString := func(v interface{}) string { b, _ := json.Marshal(v); return string(b) }
@@ -301,7 +301,7 @@ func (c *chrome) readLoop() {
 							}
 							window['%[1]s']['callbacks'].delete(%[2]d);
 							window['%[1]s']['errors'].delete(%[2]d);
-							`, payload.Name, payload.Seq, result, error)
+							`, payload.ID(), payload.Seq, result, error)
 						c.send("Runtime.evaluate", h{"expression": expr, "contextId": res.Params.ID})
 					}()
 				}

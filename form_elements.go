@@ -74,7 +74,7 @@ func (tf *InputElement) String() string {
 	if tf.Text != "" {
 		defaultValue = fmt.Sprintf(` value="%s"`, tf.Text)
 	}
-	return fmt.Sprintf(`<input type="%s" id="%s"%s%s%s>`, tf.InputType, tf.Name(), defaultValue, style, tf.BoundEvents)
+	return fmt.Sprintf(`<input type="%s" id="%s"%s%s%s>`, tf.InputType, tf.ID()(), defaultValue, style, tf.BoundEvents)
 }
 
 // NewInputElement creates an input element
@@ -147,7 +147,7 @@ func (se *SelectElement) String() string {
 			binding += fmt.Sprintf(` %s="%s()"`, e, bnd.FunctionName)
 		}
 	}
-	return fmt.Sprintf(`<select id="%s"%s>%s</select>`, se.Name(), binding, se.Options)
+	return fmt.Sprintf(`<select id="%s"%s>%s</select>`, se.ID()(), binding, se.Options)
 }
 
 //Children returns an empty list

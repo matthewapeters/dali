@@ -49,7 +49,7 @@ func (v *Video) String() string {
 			s.getTracks()[1].stop();
 		}
 	--></script>
-	</video>`, v.Name(), style, v.Width, v.Height, v.Name(), v.Name(), v.Name())
+	</video>`, v.ID()(), style, v.Width, v.Height, v.ID()(), v.ID()(), v.ID()())
 }
 
 // Children returns the child elements
@@ -58,7 +58,7 @@ func (v *Video) Children() *Elements { return v.Elements }
 //StartTracks will start the camera and audio streams
 func (v *Video) StartTracks() error {
 	var err error
-	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_startTracks();`, v.Name()))
+	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_startTracks();`, v.ID()()))
 	if e != nil {
 		err = fmt.Errorf(fmt.Sprintf(`%s`, e))
 	}
@@ -71,7 +71,7 @@ func (v *Video) StopTracks() error {
 		return errors.New("Window is not yet started")
 	}
 	var err error
-	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_stopTracks(); `, v.Name()))
+	e := (*v.GetUI()).Eval(fmt.Sprintf(`%s_stopTracks(); `, v.ID()()))
 	if e != nil {
 		err = fmt.Errorf(fmt.Sprintf(`%s`, e))
 	}
