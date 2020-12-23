@@ -20,32 +20,6 @@ const (
 	H4 = HeaderLevel(4)
 )
 
-// BR a break tag
-type BR struct {
-	StyleName string
-	Base
-}
-
-// Children will return an empty Elements
-func (br *BR) Children() *Elements {
-	return &Elements{slice: []*Element{}}
-}
-
-//LineBreak generates a BR tag
-func LineBreak() *BR {
-	return &BR{}
-}
-
-func (br *BR) String() string {
-	return "<br/>"
-}
-
-//Class  of the BR
-func (br *BR) Class() string { return "BR" }
-
-//Style of the BR
-func (br *BR) Style() string { return br.StyleName }
-
 //Header is a header
 type Header struct {
 	Level HeaderLevel
