@@ -1,8 +1,5 @@
 package dali
 
-// HeaderLevel enums header sizes
-type HeaderLevel int
-
 // BR a break tag
 type BR struct {
 	Base
