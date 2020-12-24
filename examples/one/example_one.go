@@ -46,7 +46,7 @@ func main() {
 	/*Add an H1 banner named pageBanner to the GUI*/
 	Banner := dali.NewHeader(dali.H1, "pageBanner", "pageBanner", "This is Example One")
 	Body.Elements.AddElement(Banner)
-	Body.Elements.AddElement(dali.LineBreak())
+	Body.Elements.AddElement(dali.NewBreak()())
 
 	/*Add some exposition*/
 	ScrollableDiv := dali.NewDiv("", "")
@@ -54,7 +54,7 @@ func main() {
 	blahBlah := dali.Text(IpsumLorem())
 	ScrollableDiv.Elements.AddElement(blahBlah)
 	Body.Elements.AddElement(ScrollableDiv)
-	Body.Elements.AddElement(dali.LineBreak())
+	Body.Elements.AddElement(dali.NewBreak()())
 
 	/*Demonstate Promise bindings by having a button trigger a random number selection*/
 	nbr := dali.NewSpanElement("randomNumber", "randomNumber", "Click button to pick a random number...")

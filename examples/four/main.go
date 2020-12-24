@@ -22,7 +22,7 @@ func main() {
 	stop.BindFunction(dali.ClickEvent, "stopTracks", func() { _ = v.StopTracks() })
 
 	b.Elements.AddElement(v)
-	b.Elements.AddElement(dali.LineBreak())
+	b.Elements.AddElement(dali.NewBreak()())
 	b.Elements.AddElement(start)
 	b.Elements.AddElement(stop)
 

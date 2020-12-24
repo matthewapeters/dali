@@ -10,8 +10,8 @@ func (br *BR) Children() *Elements {
 	return &Elements{slice: []*Element{}}
 }
 
-//LineBreak generates a BR tag
-func LineBreak() *BR {
+//NewBreak generates a BR tag
+func NewBreak() *BR {
 	return &BR{
 		Base: Base{ElementClass: "br"},
 	}

@@ -35,25 +35,12 @@ func (b Binding) SetEvent(e EventType) {
 // Window is the main application window
 type Window struct {
 	Width, Height int
-	Style         StyleSheet
+	Style         *StyleSheet
 	ui            lorca.UI
 	ProfileDir    string
 	Elements      *Elements
 	Args          []string
 	Bindings      []Binding
-}
-
-// StyleSheet references an external stylesheet to load
-type StyleSheet struct {
-	URL string
-}
-
-//String for StyleSheet
-func (style StyleSheet) String() string {
-	if style.URL == "" {
-		return ""
-	}
-	return fmt.Sprintf(`<link rel="stylesheet" href="%s">`, style.URL)
 }
 
 // NewWindow creates a new Window
@@ -63,7 +50,7 @@ func NewWindow(width, height int, profileDir string, styleSheet string, args ...
 	w := Window{
 		Width:      width,
 		Height:     height,
-		Style:      StyleSheet{URL: styleSheet},
+		Style:      &StyleSheet{URL: styleSheet},
 		ui:         nil,
 		Args:       args,
 		ProfileDir: profileDir,
