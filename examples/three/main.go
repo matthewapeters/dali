@@ -368,7 +368,7 @@ func main() {
 	iterations.SetStyle("width:10em;")
 	iterationsDiv.Elements.AddElement(dali.NewSpanElement("iterLabel", "iterLabel", "Iterations: "))
 	iterationsDiv.Elements.AddElement(iterations)
-	iterationsDiv.Elements.AddElement(dali.NewBreak()())
+	iterationsDiv.Elements.AddElement(dali.NewBreak())
 	iterationsDiv.Elements.AddElement(startButton)
 	iterationsDiv.Elements.AddElement(pauseButton)
 
@@ -380,7 +380,7 @@ func main() {
 
 	c, _ = tabl.GetCell(1, 1)
 	c.SetStyle(c.Style() + ";text-align:center;item-align:center")
-	//c.Elements.AddElement(dali.NewBreak()())
+	//c.Elements.AddElement(dali.NewBreak())
 	panTable.SetStyle("width:100%;self-align:center;border:solid 1px")
 	c.Elements.AddElement(panTable)
 	c, _ = tabl.GetCell(2, 0)
@@ -421,15 +421,15 @@ func main() {
 	c, _ = tabl.GetCell(0, 1)
 	c.SetStyle("text-align:left")
 	c.Elements.AddElement(dali.NewSpanElement("favLabel", "favLabel", "Favorites"))
-	c.Elements.AddElement(dali.NewBreak()())
+	c.Elements.AddElement(dali.NewBreak())
 	c.Elements.AddElement(favs)
 	c.Elements.AddElement(saveButton)
 	c.Elements.AddElement(viewName)
-	c.Elements.AddElement(dali.NewBreak()())
-	c.Elements.AddElement(dali.NewBreak()())
+	c.Elements.AddElement(dali.NewBreak())
+	c.Elements.AddElement(dali.NewBreak())
 
 	c.Elements.AddElement(dali.NewSpanElement("rendrLabel", "rendrLabel", "Render Progress:"))
-	c.Elements.AddElement(dali.NewBreak()())
+	c.Elements.AddElement(dali.NewBreak())
 	c.Elements.AddElement(progress)
 
 	div.Elements.AddElement(tabl)

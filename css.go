@@ -907,6 +907,9 @@ func (ss *StyleSheet) String() string {
 
 // AddProperty adds a property and its value to a stylesheet
 func (ss *StyleSheet) AddProperty(property CSS, value string) {
+	if ss.Properties == nil {
+		ss.Properties = &Properties{}
+	}
 	(*ss.Properties)[property] = value
 }
 
