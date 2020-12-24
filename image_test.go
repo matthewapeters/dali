@@ -1,12 +1,14 @@
-package dali
+package dali_test
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/matthewapeters/dali"
 )
 
 func TestImage(t *testing.T) {
-	i := NewImage("TestImageName", "TestImageID", 100, 200, "PathToImage")
+	i := dali.NewImage("TestImageName", "TestImageID", 100, 200, "PathToImage")
 	expected := `<image name="TestImageName" id="TestImageID" width="100" height="200" src="PathToImage">`
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, i)
@@ -16,7 +18,7 @@ func TestImage(t *testing.T) {
 	if fmt.Sprintf("%s", i) != expected {
 		t.Errorf(`expected "%s" but got "%s"`, expected, i)
 	}
-	err := i.AddMapArea(Default, Coordinates{}, "altText", Function, "doAltText")
+	err := i.AddMapArea(dali.Default, dali.Coordinates{}, "altText", dali.Function, "doAltText")
 	if err != nil {
 		t.Errorf("%s", err)
 	}

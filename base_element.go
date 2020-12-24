@@ -150,6 +150,11 @@ type Elements struct {
 	slice []*Element
 }
 
+//Length provides the lenght of the Elements slice
+func (els *Elements) Length() int {
+	return len(els.slice)
+}
+
 //String for Elements
 func (els *Elements) String() string {
 	html := ""

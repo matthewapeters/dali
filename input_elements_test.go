@@ -1,9 +1,13 @@
-package dali
+package dali_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/matthewapeters/dali"
+)
 
 func TestSelectElement(t *testing.T) {
-	se := NewSelectElement("testElement", "testElement", "do_testElement")
+	se := dali.NewSelectElement("testElement", "testElement", "do_testElement")
 	se.AddOption("Label One", "1")
 	se.AddOption("Label Two", "2")
 	se.AddOption("Label Three", "3")

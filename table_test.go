@@ -1,13 +1,15 @@
-package dali
+package dali_test
 
 import (
 	"fmt"
 	"math"
 	"testing"
+
+	"github.com/matthewapeters/dali"
 )
 
 func TestTable(t *testing.T) {
-	tab := NewTableElement("testTable", "testTable", 1, 1, []string{})
+	tab := dali.NewTableElement("testTable", "testTable", 1, 1, []string{})
 	expected := `<table name="testTable" id="testTable">
 <tbody>
 	<tr>
@@ -26,7 +28,7 @@ but got:
 		}
 	}
 
-	tab = NewTableElement("testTable", "testTable", 2, 5, []string{})
+	tab = dali.NewTableElement("testTable", "testTable", 2, 5, []string{})
 	expected = `<table name="testTable" id="testTable">
 <tbody>
 	<tr>
@@ -62,10 +64,10 @@ but got:
 		}
 	}
 
-	tab = NewTableElement("cellTest", "cellTest", 2, 2, []string{})
-	var b, b2 Element
-	b = NewButton("0,0", "button1", "button1", "doButton1")
-	b2 = NewButton("1,1", "button2", "button2", "doButton2")
+	tab = dali.NewTableElement("cellTest", "cellTest", 2, 2, []string{})
+	var b, b2 dali.Element
+	b = dali.NewButton("0,0", "button1", "button1", "doButton1")
+	b2 = dali.NewButton("1,1", "button2", "button2", "doButton2")
 
 	tab.AddCellElement(0, 0, &b)
 	tab.AddCellElement(1, 1, &b2)
