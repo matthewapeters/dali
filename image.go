@@ -88,12 +88,15 @@ type Image struct {
 
 // NewImage generates a new Image object
 func NewImage(name, id string, width, height int, url string) *Image {
+	style := NewStyleSheet()
+	style.AddProperty(Width, fmt.Sprintf("%dpx", width))
+	style.AddProperty(Height, fmt.Sprintf("%dpx", height))
 	return &Image{
 		Base: Base{
 			ElementName:  name,
 			ElementID:    id,
 			ElementClass: "image",
-			ElementStyle: fmt.Sprintf(`width:%d;height:%d;`, width, height),
+			ElementStyle: style,
 		},
 		Width:   width,
 		Height:  height,

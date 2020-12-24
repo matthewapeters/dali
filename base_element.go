@@ -3,6 +3,7 @@ package dali
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/zserge/lorca"
 )
@@ -39,7 +40,7 @@ type Base struct {
 	ElementID    string
 	ElementName  string
 	ElementClass string
-	ElementStyle string
+	ElementStyle *StyleSheet
 	UI           *lorca.UI
 	BoundEvents  *BoundEvents
 	Elements     *Elements
@@ -78,7 +79,7 @@ func (b *Base) getID() string {
 }
 
 func (b *Base) getStyle() string {
-	if b.ElementStyle == "" {
+	if b.ElementStyle == nil {
 		return ""
 	}
 	return fmt.Sprintf(` style="%s"`, b.ElementStyle)
@@ -126,10 +127,29 @@ func (b *Base) SetUI(ui *lorca.UI) { b.UI = ui }
 func (b *Base) GetUI() *lorca.UI { return b.UI }
 
 //Style returns the object style descriptors
-func (b *Base) Style() string { return b.ElementStyle }
+func (b *Base) Style() string { return fmt.Sprintf("%s", b.ElementStyle) }
 
 //SetStyle will set the style
-func (b *Base) SetStyle(s string) { b.ElementStyle = s }
+func (b *Base) SetStyle(s string) {
+	if b.ElementStyle == nil {
+		b.ElementStyle = NewStyleSheet()
+	}
+	for _, kvp := range strings.Split(s, ";") {
+		if strings.Index(kvp, ":") > 0 {
+			k := strings.Split(kvp, ":")[0]
+			v := strings.Split(kvp, ":")[1]
+			b.ElementStyle.AddProperty(CSS(k), v)
+		}
+	}
+}
+
+// SetStyleProperty sets the indicated stylesheet property to the provided value
+func (b *Base) SetStyleProperty(p CSS, value string) {
+	if b.ElementStyle == nil {
+		b.ElementStyle = NewStyleSheet()
+	}
+	b.ElementStyle.AddProperty(p, value)
+}
 
 //SetBoundFunction provides a clean way to set the bound function on an event
 func (b *Base) SetBoundFunction(event EventType, f func()) {
@@ -150,7 +170,7 @@ type Elements struct {
 	slice []*Element
 }
 
-//Length provides the lenght of the Elements slice
+//Length provides the length of the Elements slice
 func (els *Elements) Length() int {
 	return len(els.slice)
 }

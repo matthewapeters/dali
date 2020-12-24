@@ -37,11 +37,14 @@ func NewVideoElement(name, id string, width, height int) *Video {
 			s.getTracks()[1].stop();
 		}`, width, height, id, id, id),
 	}
+	style := NewStyleSheet()
+	style.AddProperty(Width, fmt.Sprintf("%dpx", width))
+	style.AddProperty(Height, fmt.Sprintf("%dpx", height))
 	return &Video{
 		Base: Base{
 			ElementID:    id,
 			ElementName:  name,
-			ElementStyle: fmt.Sprintf("width:%d;height:%d;", width, height),
+			ElementStyle: style,
 			Elements: &Elements{
 				slice: []*Element{&se},
 			},

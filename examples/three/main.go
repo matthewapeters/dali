@@ -338,7 +338,7 @@ func main() {
 	panCell.Elements.AddElement(panDownButton)
 
 	focalPointTable := dali.NewTableElement("focalPointTable", "focalPointTable", 2, 2, []string{})
-	focalPointTable.SetStyle("float:right;")
+	focalPointTable.SetStyleProperty(dali.Float, "right")
 	focalPointReal := dali.NewInputElement("focalPointReal", "focalPointReal", dali.NumberInput)
 	focalPointReal.SetStyle("width:15em;")
 	focalPointReal.Text = fmt.Sprintf("%f", real(VP.ImaginaryPlaneFocalPoint))

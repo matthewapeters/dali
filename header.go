@@ -78,4 +78,4 @@ func (h *Header) SetUI(u *lorca.UI) {
 func (h *Header) Name() string { return h.Base.Name() }
 
 //SetStyle sets the base style
-func (h *Header) SetStyle(s string) { h.Base.ElementStyle = s }
+func (h *Header) SetStyle(s string) { h.Base.SetStyle(s) }
