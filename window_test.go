@@ -7,18 +7,6 @@ import (
 	"github.com/matthewapeters/dali"
 )
 
-func TestStyleSheet(t *testing.T) {
-	s := dali.StyleSheet{}
-	if fmt.Sprintf("%s", s) != "" {
-		t.Errorf("Expected empty string.  Got %s", s)
-	}
-	s = dali.StyleSheet{URL: "MyStyleSheet.css"}
-	expected := `<link rel="stylesheet" href="MyStyleSheet.css">`
-	if fmt.Sprintf("%s", s) != expected {
-		t.Errorf("Expected %s but got %s", expected, s)
-	}
-}
-
 func TestButton(t *testing.T) {
 	b := dali.NewButton("This Is A Button", "MyTestButton", "MyTestButton", "do_MyTestButton")
 	expected := `<button id="MyTestButton" onclick="do_MyTestButton()">This Is A Button</button>`

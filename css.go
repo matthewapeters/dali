@@ -1,6 +1,9 @@
 package dali
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // Property descriptions originally sourced from the following sites
 // Content in the form of comments has been moderately modified from original work
@@ -407,10 +410,15 @@ Copyright © 1994–2020 W3C®
 //CSS is a Cascading Style Sheet property
 type CSS string
 
-// StyleSheet is a map of CSS properties and values
+// Properties is a map of CSS properties and values
+type Properties map[CSS]string
+
+// StyleSheet object is a remote reference to a stylesheet or a map of Properties and Values
+// If a URL is set, it will supercede any set properties, and the StyleSheet will produce a link element
+// referencing the URL
 type StyleSheet struct {
 	URL        string
-	Properties map[CSS]string
+	Properties *Properties
 }
 
 const (
@@ -876,18 +884,36 @@ const (
 	ZIndex = CSS(`z-index`)
 )
 
-func (ss *StyleSheet) String() string {
-	if ss.URL != "" {
-		return fmt.Sprintf(`<link rel="stylesheet" href="%s">`, ss.URL)
-	}
+func (ps *Properties) String() string {
 	css := ""
-	for p, v := range ss.Properties {
-		css += fmt.Sprintf("%s:%s;", p, v)
+	keys := make([]string, 0, len(*ps))
+	for k := range *ps {
+		keys = append(keys, string(k))
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		v := (*ps)[CSS(k)]
+		css += fmt.Sprintf("%s:%s;", k, v)
 	}
 	return css
 }
 
+func (ss *StyleSheet) String() string {
+	if ss.URL != "" {
+		return fmt.Sprintf(`<link rel="stylesheet" href="%s">`, ss.URL)
+	}
+	return fmt.Sprintf("%s", ss.Properties)
+}
+
 // AddProperty adds a property and its value to a stylesheet
 func (ss *StyleSheet) AddProperty(property CSS, value string) {
-	ss.Properties[property] = value
+	(*ss.Properties)[property] = value
+}
+
+// NewStyleSheet generates a new CSS Style Sheet object
+func NewStyleSheet() *StyleSheet {
+	return &StyleSheet{
+		URL:        "",
+		Properties: &Properties{},
+	}
 }
