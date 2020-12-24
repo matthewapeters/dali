@@ -15,7 +15,10 @@ func main() {
 	b := dali.NewBodyElement("")
 
 	v := dali.NewVideoElement("vid", "vid", 900, 700)
-	v.SetStyle(`display:inline-block;width:900px;height:700px;boder:solid 1px #338811`)
+	v.SetStyleProperty(dali.Display, "inline-block")
+	v.SetStyleProperty(dali.Width, "900px")
+	v.SetStyleProperty(dali.Height, "700px")
+	v.SetStyleProperty(dali.Border, "solid 1px #338811")
 	start := dali.NewButton("Start Video", "startButton", "startButton", "startTracks")
 	start.BindFunction(dali.ClickEvent, "startTracks", func() { _ = v.StartTracks() })
 	stop := dali.NewButton("Stop Video", "stopButton", "stopButton", "stopTracks")
