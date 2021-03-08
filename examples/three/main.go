@@ -464,13 +464,16 @@ func main() {
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 
+	Window.Bind("draw_mandelbrot_set",
+		func() {
+			UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
+		})
+
 	doneChanFn, err := Window.StartUp()
-	if err == nil {
-		Window.GetUI().Bind("draw_mandelbrot_set",
-			func() {
-				UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
-			})
-		<-doneChanFn()
-		fmt.Println("Error", err)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
+
+	<-doneChanFn()
 }
