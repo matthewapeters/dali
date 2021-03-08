@@ -464,10 +464,13 @@ func main() {
 		UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
 	})
 
-	Window.Start()
-	Window.GetUI().Bind("draw_mandelbrot_set",
-		func() {
-			UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
-		})
-	<-Window.GetUI().Done()
+	doneChan, err := Window.StartUp()
+	if err != nil {
+
+		Window.GetUI().Bind("draw_mandelbrot_set",
+			func() {
+				UpdateDisplay(VP, display, &control, iterations, zoomLevel, focalPointReal, focalPointImaginary, progress)
+			})
+		<-doneChan
+	}
 }

@@ -179,3 +179,28 @@ func (w *Window) Close() {
 func (w *Window) GetUI() lorca.UI {
 	return w.ui
 }
+
+// StartUp extracts the application HTML and starts the UI
+func (w *Window) StartUp() (<-chan struct{}, error) {
+	newui, err := lorca.New(
+		"data:text/html,"+url.PathEscape(fmt.Sprintf("%s", w)),
+		w.ProfileDir,
+		w.Width,
+		w.Height,
+		w.Args...)
+	if err != nil {
+		return nil, err
+	}
+	w.ui = newui
+
+	w.BindChildren(nil)
+
+	//Apply Bindings
+	for _, bound := range w.Bindings {
+		err = newui.Bind(bound.FunctionName, bound.BoundFunction)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return w.ui.Done(), nil
+}
